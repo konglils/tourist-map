@@ -1,0 +1,47 @@
+name: CI Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        qt_version: ["6.8.3"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt_version }}
+          host: ${{ matrix.os == 'windows-latest' && 'windows' || 'linux' }}
+          target: desktop
+          arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2022_64' || '' }}
+
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_FIND_LIBRARY_SUFFIXES=".a;.lib" \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_PREFIX_PATH="$QT_ROOT_DIR" \
+            -DQt6_DIR="$QT_ROOT_DIR/lib/cmake/Qt6"
+      - name: Build
+        run: |
+          cd build
+          cmake --build . --config Release
+      - name: Package or deploy
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd build
+          "$QT_ROOT_DIR/bin/windeployqt" Release/tourist_map.exe
