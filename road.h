@@ -45,8 +45,7 @@ private:
     QPainterPath m_shape; // 路的实际形状，用于绘图
     QPainterPath m_major; // 路的主体
     QPainterPath m_outline; // 路的轮廓
-    // QColor m_color = QColor(255, 255, 255, 100); // 路的颜色
-    QColor m_color = Qt::blue;
+    QColor m_color = QColor(255, 255, 255, 100); // 路的颜色
     bool m_checked = false; // 是否被选中
 };
 

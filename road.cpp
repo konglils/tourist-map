@@ -71,11 +71,9 @@ void Road::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 void Road::setChecked(bool checked) {
     m_checked = checked;
     if (checked) {
-        // m_color = QColor("#4169E1");
-        m_color = Qt::red;
+        m_color = QColor("#4169E1");
     } else {
-        // m_color = QColor(255, 255, 255, 100);
-        m_color = Qt::blue;
+        m_color = QColor(255, 255, 255, 100);
     }
 }
 
