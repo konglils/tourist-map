@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_LIBRARY_SUFFIXES .a .lib)
 set(BUILD_SHARED_LIBS OFF)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Gui)
 
 qt_standard_project_setup()
 
