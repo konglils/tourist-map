@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -21,9 +21,9 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.8.3'
-          host: ${{ matrix.os == 'windows-latest' ? 'windows' : 'linux' }}
+          host: 'linux'
           target: desktop
-          arch: ${{ matrix.os == 'windows-latest' ? 'win64_msvc2022_64' : 'gcc_64' }}
+          arch: 'gcc_64'
           modules: 'qtbase'
           cache: true
 
