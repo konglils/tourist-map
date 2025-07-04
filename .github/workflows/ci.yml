@@ -24,9 +24,12 @@ jobs:
           version: ${{ matrix.qt_version }}
           host: ${{ matrix.os == 'windows-latest' && 'windows' || 'linux' }}
           target: desktop
+          install-deps: true
           arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2022_64' || '' }}
 
       - name: Configure CMake
+        env:
+          CMAKE_PREFIX_PATH: ${{ env.QT_DIR }}
         run: |
           mkdir build
           cd build
