@@ -27,6 +27,15 @@ jobs:
           modules: 'qtbase'
           cache: true
 
+      - name: List Qt archs
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            python3 -m aqt list-qt windows desktop --arch 6.8.3
+          else
+            python3 -m aqt list-qt linux desktop --arch 6.8.3
+          fi
+
       - name: Install Linux dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
