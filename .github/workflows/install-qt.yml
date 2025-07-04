@@ -1,0 +1,45 @@
+name: CI with Qt on Linux and Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    # 使用矩阵同时在 Ubuntu 和 Windows 上运行
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - windows-latest
+        # 可以在此处添加更多版本或参数
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.*'
+          host: ${{ matrix.os == 'windows-latest' && 'windows' || 'linux' }}
+          target: 'desktop'
+          arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2022_64' || 'linux_aarch64' }}
+          cache: true
+          install-deps: true
+
+      - name: Show qmake version
+        run: qmake --version
+
+      - name: Configure CMake
+        run: |
+          mkdir build && cd build
+          cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build
