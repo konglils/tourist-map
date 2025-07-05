@@ -8,29 +8,15 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: 'windows-latest'
 
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.8.3'
-          host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2022_64'
-          dir: '${{ github.workspace }}/example/'
-          install-deps: 'true'
-          modules: 'qtcharts qtwebengine'
-          archives: 'qtbase qtsvg'
-          cache: 'false'
-          cache-key-prefix: 'install-qt-action'
-          setup-python: 'true'
-          tools: 'tools_ifw tools_qtcreator,qt.tools.qtcreator'
-          set-env: 'true'
-          tools-only: 'false'
-          aqtversion: '==3.3.*'
-          py7zrversion: '==1.0.*'
-          extra: '--external 7z'
-          use-official: false
+          use-official: true
           email: ${{ secrets.QT_EMAIL }}
           pw: ${{ secrets.QT_PW }}
