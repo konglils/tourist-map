@@ -8,54 +8,27 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
-
     steps:
-      - uses: actions/checkout@v4
-
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.8.3'
-          host: 'linux'
-          target: desktop
-          arch: 'gcc_64'
-          cache: true
-
-      - name: List Qt archs
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            python3 -m aqt list-qt windows desktop --arch 6.8.3
-          else
-            python3 -m aqt list-qt linux desktop --arch 6.8.3
-          fi
-
-      - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libxkbcommon-x11-0
-
-      - name: Configure and Build
-        shell: bash
-        run: |
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release
-          cmake --build . --config Release
-
-      - name: Test executable
-        shell: bash
-        run: |
-          cd build
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            ls -la Release/ || ls -la .
-          else
-            ls -la .
-            ldd tourist_map || true
-          fi
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_64'
+          dir: '${{ github.workspace }}/example/'
+          install-deps: 'true'
+          modules: 'qtcharts qtwebengine'
+          archives: 'qtbase qtsvg'
+          cache: 'false'
+          cache-key-prefix: 'install-qt-action'
+          setup-python: 'true'
+          tools: 'tools_ifw tools_qtcreator,qt.tools.qtcreator'
+          set-env: 'true'
+          tools-only: 'false'
+          aqtversion: '==3.3.*'
+          py7zrversion: '==1.0.*'
+          extra: '--external 7z'
+          use-official: false
+          email: ${{ secrets.QT_EMAIL }}
+          pw: ${{ secrets.QT_PW }}
