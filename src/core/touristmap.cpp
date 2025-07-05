@@ -85,7 +85,7 @@ void TouristMap::clear() {
 }
 
 void TouristMap::calShortestPath(Node *source) {
-    m_shortestDistance.assign(m_graph.size(), 1./0.);
+    m_shortestDistance.assign(m_graph.size(), std::numeric_limits<double>::max());
     m_shortestPath.assign(m_graph.size(), std::make_pair(nullptr, nullptr));
     m_source = source;
     m_shortestDistance[source->index()] = 0.;
@@ -389,7 +389,7 @@ bool TouristMap::saveFile(const QString &fileName) {
     }
 
     quint64 numAllNode = numNode + numSpot;
-    m_shortestDistance.assign(numAllNode, 1./0.);
+    m_shortestDistance.assign(numAllNode, std::numeric_limits<double>::max());
     m_shortestPath.assign(numAllNode, std::make_pair(nullptr, nullptr));
     fill(m_graph.begin(), m_graph.end(), std::vector<std::pair<Node *, Road *>>{});
     for (QGraphicsItem *item : m_scene->items()) {
