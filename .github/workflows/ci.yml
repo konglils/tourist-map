@@ -35,4 +35,12 @@ jobs:
       shell: bash
       run: |
         cd build
-        ls -la Release/ || ls -la .
+        ls -la Release/
+        ls -la .
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: tourist_map.exe
+        path: |
+          build/Release/tourist_map.exe
