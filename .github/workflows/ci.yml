@@ -39,7 +39,7 @@ jobs:
         ls -la .
     
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tourist_map.exe
         path: |
