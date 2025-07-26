@@ -10,9 +10,7 @@ Spot::Spot(double x, double y, const QString &name, const QString &description, 
     , m_description(description)
 {
     setAcceptHoverEvents(true);
-    setChecked(false);
 }
-
 
 void Spot::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     auto text = QString("%1<br><br>%2").arg(m_name, m_description);
@@ -28,10 +26,10 @@ void Spot::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 }
 
 void Spot::setChecked(bool checked) {
-    checked_ = checked;
+    m_checked = checked;
     if (checked) {
-        color_ = QColor(0, 255, 127);
+        m_color = QColor(0, 255, 127);
     } else {
-        color_ = QColor(255, 215, 0);
+        m_color = QColor(255, 215, 0);
     }
 }

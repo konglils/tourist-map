@@ -28,7 +28,7 @@ QPainterPath Node::shape() const {
 }
 
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    painter->setBrush(color_);
+    painter->setBrush(m_color);
     painter->setPen(QPen(Qt::black, 1));
     painter->drawPath(m_shape);
 }
@@ -58,10 +58,10 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void Node::setChecked(bool checked) {
-    checked_ = checked;
+    m_checked = checked;
     if (checked) {
-        color_ = Qt::black;
+        m_color = Qt::black;
     } else {
-        color_ = QColor(255, 255, 255, 100);
+        m_color = QColor(255, 255, 255, 100);
     }
 }

@@ -12,7 +12,7 @@ public:
 
     double x() const { return m_x; }
     double y() const { return m_y; }
-    bool isChecked() const { return checked_; }
+    bool isChecked() const { return m_checked; }
     virtual void setChecked(bool checked);
     quint64 index() { return m_index; }
     void setIndex(quint64 index) { m_index = index; }
@@ -22,8 +22,8 @@ public:
     int type() const override { return Type; }
 
 protected:
-    QColor color_ = QColor(255, 255, 255, 100); // 结点颜色
-    bool checked_ = false; // 是否被选中
+    QColor m_color = QColor(255, 255, 255, 100); // 结点颜色
+    bool m_checked = false; // 是否被选中
 
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
