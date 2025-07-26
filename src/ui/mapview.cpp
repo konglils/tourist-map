@@ -19,7 +19,6 @@ MapView::MapView(QWidget *parent)
 {
     setEnabled(false); // 默认不可操作，因为没有还没有场景
     setRenderHint(QPainter::Antialiasing); // 抗锯齿
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse); // 缩放时围绕鼠标指针
 }
 
 void MapView::setTitle(const QString &name) {
@@ -28,6 +27,7 @@ void MapView::setTitle(const QString &name) {
 
 void MapView::open() {
     // TODO 打开默认地图
+    openFile("/home/cyber/Desktop/ecjtu.map");
 }
 
 void MapView::setNewMap(std::unique_ptr<TouristMap> map) {
@@ -139,10 +139,32 @@ void MapView::enlarge(bool flag) {
     update();
 }
 
+void MapView::enlarge(bool flag, QPointF mousePos) {
+    auto [width, height] = viewport()->size();
+    qreal cx = width / 2;
+    qreal cy = height / 2;
+    qreal dx = mousePos.x() - cx;
+    qreal dy = mousePos.y() - cy;
+
+    horizontalScrollBar()->setValue(horizontalScrollBar()->value() + dx);
+    verticalScrollBar()->setValue(verticalScrollBar()->value() + dy);
+
+    if (flag) {
+        scale(m_SCALING, m_SCALING);
+    } else {
+        scale(1/m_SCALING, 1/m_SCALING);
+    }
+
+    horizontalScrollBar()->setValue(horizontalScrollBar()->value() - dx);
+    verticalScrollBar()->setValue(verticalScrollBar()->value() - dy);
+
+    update();
+}
+
 void MapView::wheelEvent(QWheelEvent *event) {
     QPoint angle = event->angleDelta();
     if (!angle.isNull()) {
-        enlarge(angle.y() > 0);
+        enlarge(angle.y() > 0, event->position());
     }
 }
 

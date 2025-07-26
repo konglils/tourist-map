@@ -10,6 +10,7 @@ Spot::Spot(double x, double y, const QString &name, const QString &description, 
     , m_description(description)
 {
     setAcceptHoverEvents(true);
+    m_color = QColor(255, 215, 0);
 }
 
 void Spot::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
