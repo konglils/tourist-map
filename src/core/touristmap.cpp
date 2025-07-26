@@ -289,6 +289,7 @@ bool TouristMap::readRoad(QDataStream &in, quint64 numRoad) {
         for (quint64 j = 1; j < numPoint; j += 1) {
             in >> x >> y;
             if (in.status() != QDataStream::Ok) {
+                delete road;
                 return false;
             }
             road->lineTo(x, y);
