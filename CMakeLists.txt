@@ -4,11 +4,7 @@ project(tourist_map VERSION 0.2.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 静态链接
-set(CMAKE_FIND_LIBRARY_SUFFIXES .a .lib)
-set(BUILD_SHARED_LIBS OFF)
-
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Gui)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
 qt_standard_project_setup()
 
@@ -23,9 +19,14 @@ file(GLOB_RECURSE SOURCES
 # 创建可执行文件
 add_executable(tourist_map ${SOURCES})
 
-target_link_libraries(tourist_map Qt6::Core Qt::Widgets)
+target_link_libraries(tourist_map
+    PRIVATE
+        Qt::Core
+        Qt::Widgets
+)
 
 include(GNUInstallDirs)
+
 install(TARGETS tourist_map
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
