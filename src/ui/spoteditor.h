@@ -18,7 +18,8 @@ signals:
     void inputEnd(bool focusOut); // 输入结束信号
 
 protected:
-    bool eventFilter(QObject *watched, QEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     QLineEdit *m_name; // 名称输入框

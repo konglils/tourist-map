@@ -86,7 +86,11 @@ void MapView::mousePressEvent(QMouseEvent *event) {
             g_map->addNode(node);
             scene()->addItem(node);
         } else if (g_mode == SpotMode) {
-            inputInfo(mapToScene(event->pos()));
+            event->ignore();
+            QGraphicsView::mousePressEvent(event);
+            if (!event->isAccepted()) {
+                inputInfo(mapToScene(event->pos()));
+            }
         } else if (g_mode == RoadMode) {
             event->ignore();
             QGraphicsView::mousePressEvent(event); // 事件进入 Node，则 accept；进入 Road，则 ignore
@@ -165,6 +169,7 @@ void MapView::inputInfo(QPointF pos) {
     auto proxy = scene()->addWidget(editor);
     proxy->setPos(pos + QPoint(15, 15));
     proxy->setZValue(10);
+    proxy->setFlag(QGraphicsItem::ItemIgnoresTransformations); // 不随 view 缩放
     editor->focusName();
 
     connect(editor, &SpotEditor::inputEnd, [=, this](bool focusOut) {

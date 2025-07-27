@@ -37,6 +37,10 @@ SpotEditor::SpotEditor(QWidget *parent)
             });
 }
 
+void SpotEditor::mousePressEvent(QMouseEvent *event) {
+    event->accept();
+}
+
 bool SpotEditor::eventFilter(QObject *watched, QEvent *event) {
     bool inWidget = watched == this || watched == m_name || watched == m_description;
     bool focusOut = event->type() == QEvent::FocusOut;
