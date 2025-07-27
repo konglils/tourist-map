@@ -1,7 +1,6 @@
 #include "touristmap.h"
 
 #include "global.h"
-#include "mapview.h"
 #include "node.h"
 #include "spot.h"
 #include "road.h"
@@ -13,8 +12,8 @@
 #include <QGraphicsScene>
 #include <QStringDecoder>
 
-TouristMap::TouristMap(MapView *view)
-    : m_scene(new QGraphicsScene(view))
+TouristMap::TouristMap()
+    : m_scene(new MapScene)
 {}
 
 bool TouristMap::loadImage() {
@@ -218,7 +217,9 @@ bool TouristMap::openFile(const QString &fileName) {
     }
 
     quint64 pictureSize, numNode, numSpot, numRoad;
-    in >> pictureSize >> m_mapScale >> numNode >> numSpot >> numRoad;
+    double scale;
+    in >> pictureSize >> scale >> numNode >> numSpot >> numRoad;
+    setScale(scale);
     if (in.status() != QDataStream::Ok) {
         return false;
     }
@@ -384,7 +385,7 @@ bool TouristMap::saveFile(const QString &fileName) {
     qDebug() << "Item Count: Node =" << numNode << "|" << "Spot =" << numSpot << "|" << "Road =" << numRoad;
 
     writeFormatInfo(out);
-    out << pictureSize << m_mapScale << numNode << numSpot << numRoad;
+    out << pictureSize << m_scene->scale() << numNode << numSpot << numRoad;
     if (out.status() != QDataStream::Ok) {
         return false;
     }

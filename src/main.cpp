@@ -1,12 +1,3 @@
-/* BUGs
- * 在较密集的路网周围按住右键拖动转圈，路长信息会闪烁
- * 点击地点，不输入，切换成路口模式再点空白处，输入框不会消失
- */
-
-/* TODOs
- * 显示路线总长
- */
-
 #include "mainwindow.h"
 
 #include <QApplication>

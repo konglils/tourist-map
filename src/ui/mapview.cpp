@@ -16,10 +16,13 @@
 
 MapView::MapView(QWidget *parent)
     : QGraphicsView(parent)
+    , m_spotEditor(new SpotEditor)
 {
     setEnabled(false); // 默认不可操作，因为没有还没有场景
     setRenderHint(QPainter::Antialiasing); // 抗锯齿
     setTransformationAnchor(QGraphicsView::NoAnchor);
+
+    m_spotEditor->setFixedSize(150, 50);
 }
 
 void MapView::setTitle(const QString &name) {
@@ -40,7 +43,6 @@ void MapView::setNewMap(std::unique_ptr<TouristMap> map) {
     }
     setScene(g_map->scene());
     setTitle(g_map->name());
-    g_scale = g_map->scale();
     setEnabled(true); // 设置 MapView 可操作
     resetTransform(); // 重置平移缩放
     g_infoTip = new InfoTip;
@@ -48,7 +50,7 @@ void MapView::setNewMap(std::unique_ptr<TouristMap> map) {
 }
 
 void MapView::openFile(const QString &fileName) {
-    auto map = std::make_unique<TouristMap>(this);
+    auto map = std::make_unique<TouristMap>();
     bool success = map->openFile(fileName);
     if (success) {
         setNewMap(std::move(map));
@@ -67,7 +69,7 @@ void MapView::save() {
 }
 
 void MapView::createMap(const QString &imageFileName, const QString &mapName, double mapScale) {
-    auto map = std::make_unique<TouristMap>(this);
+    auto map = std::make_unique<TouristMap>();
     bool success = map->setImage(imageFileName);
     if (success) {
         map->setName(mapName);

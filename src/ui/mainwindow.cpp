@@ -98,12 +98,12 @@ void MainWindow::setupActions() {
         }
     };
 
-    std::vector<std::pair<QAction*, Mode>> actionModes = {
-                                                           { nodeAction, NodeMode },
-                                                           { spotAction, SpotMode },
-                                                           { roadAction, RoadMode },
-                                                           { delAction, DelMode },
-                                                           };
+    std::vector<std::pair<QAction *, Mode>> actionModes = {
+        { nodeAction, NodeMode },
+        { spotAction, SpotMode },
+        { roadAction, RoadMode },
+        { delAction, DelMode },
+    };
 
     for (auto [action, mode] : actionModes) {
         connect(action, &QAction::triggered, [=]() {

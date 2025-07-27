@@ -39,6 +39,7 @@
  *    变长 坐标 途经点
  */
 
+#include "mapscene.h"
 #include "road.h"
 
 #include <QGraphicsScene>
@@ -49,16 +50,15 @@ class MapView;
 class TouristMap
 {
 public:
-    TouristMap(MapView *view);
+    TouristMap();
     QGraphicsScene *scene() { return m_scene; }
     bool openFile(const QString &fileName); // 打开文件
     bool saveFile(const QString &fileName); // 保存文件
     bool save(); // 保存
     QString name() const { return m_name; }
-    double scale() const { return m_mapScale; }
     bool setImage(const QString &imageFileName); // 设置参考图
     void setName(const QString &name) { m_name = name;}
-    void setScale(double scale) { m_mapScale = scale; }
+    void setScale(double scale) { m_scene->setScale(scale); }
     void clear(); // 清除地图选中状态
     void addNode(Node *node); // 添加结点
     void addRoad(Road *road); // 添加道路
@@ -69,9 +69,8 @@ public:
 private:
     QString m_fileName; // 文件名
     QByteArray m_image; // 参考图原始数据
-    double m_mapScale; // 地图比例尺 meter : pixel
     QString m_name; // 地图名称
-    QGraphicsScene *m_scene; // 对应的 scene
+    MapScene *m_scene; // 对应的 scene
     std::vector<std::vector<std::pair<Node *, Road *>>> m_graph; // 图
     Node *m_source = nullptr; // 初始未设置源点
     Node *m_destination = nullptr; // 初始未设置目的地
