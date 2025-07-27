@@ -28,7 +28,7 @@ private:
     static constexpr double m_SCALING = 1.2; // 放大缩小的比例
     bool m_dragging = false; // 鼠标是否正在拖拽
     QPointF m_mousePos; // 鼠标位置，用于编写拖拽逻辑
-    void enlarge(bool flag, QPointF mousePos); // 鼠标位置处缩放
+    void enlarge(bool flag, QPointF mousePos); // 指定位置处缩放
 
     void inputInfo(QPointF point); // 在指定位置创建输入框输入信息
 };

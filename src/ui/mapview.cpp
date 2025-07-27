@@ -19,6 +19,7 @@ MapView::MapView(QWidget *parent)
 {
     setEnabled(false); // 默认不可操作，因为没有还没有场景
     setRenderHint(QPainter::Antialiasing); // 抗锯齿
+    setTransformationAnchor(QGraphicsView::NoAnchor);
 }
 
 void MapView::setTitle(const QString &name) {
@@ -112,10 +113,8 @@ void MapView::mouseMoveEvent(QMouseEvent *event) {
         auto [dx, dy] = event->pos() - m_mousePos;
         m_mousePos = event->pos();
 
-        horizontalScrollBar()->setValue(
-            horizontalScrollBar()->value() - dx);
-        verticalScrollBar()->setValue(
-            verticalScrollBar()->value() - dy);
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - dx);
+        verticalScrollBar()->setValue(verticalScrollBar()->value() - dy);
     } else {
         QGraphicsView::mouseMoveEvent(event);
     }
@@ -131,32 +130,24 @@ void MapView::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void MapView::enlarge(bool flag) {
-    if (flag) {
-        scale(m_SCALING, m_SCALING);
-    } else {
-        scale(1/m_SCALING, 1/m_SCALING);
-    }
-    update();
+    enlarge(flag, viewport()->rect().center());
 }
 
 void MapView::enlarge(bool flag, QPointF mousePos) {
-    auto [width, height] = viewport()->size();
-    qreal cx = width / 2;
-    qreal cy = height / 2;
-    qreal dx = mousePos.x() - cx;
-    qreal dy = mousePos.y() - cy;
+    double scal = flag ? m_SCALING : 1 / m_SCALING;
 
-    horizontalScrollBar()->setValue(horizontalScrollBar()->value() + dx);
-    verticalScrollBar()->setValue(verticalScrollBar()->value() + dy);
+    auto [x, y] = mapToScene(mousePos.toPoint());
+    double mx = x * transform().m11();
+    double my = y * transform().m22();
+    double nx = mx * scal;
+    double ny = my * scal;
 
-    if (flag) {
-        scale(m_SCALING, m_SCALING);
-    } else {
-        scale(1/m_SCALING, 1/m_SCALING);
-    }
+    auto hBar = horizontalScrollBar();
+    auto vBar = verticalScrollBar();
+    hBar->setValue(hBar->value() + nx - mx);
+    vBar->setValue(vBar->value() + ny - my);
 
-    horizontalScrollBar()->setValue(horizontalScrollBar()->value() - dx);
-    verticalScrollBar()->setValue(verticalScrollBar()->value() - dy);
+    scale(scal, scal);
 
     update();
 }
