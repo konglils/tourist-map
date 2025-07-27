@@ -39,17 +39,20 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent *event) {
             g_map->pressNode(this);
         } else if (g_mode == RoadMode) {
             // 路只能以节点开始和结束
-            if (g_buildingRoad) {
-                g_buildingRoad->lineTo(m_x, m_y);
-                g_buildingRoad->render();
-                g_buildingRoad->update();
-                g_buildingRoad->setNode2(this);
-                g_map->addRoad(g_buildingRoad);
-                g_buildingRoad = nullptr;
+            auto mapScene = static_cast<MapScene *>(scene());
+            auto buildingRoad = mapScene->buildingRoad();
+            if (buildingRoad) {
+                buildingRoad->lineTo(m_x, m_y);
+                buildingRoad->render();
+                buildingRoad->update();
+                buildingRoad->setNode2(this);
+                g_map->addRoad(buildingRoad);
+                mapScene->setBuildingRoad(nullptr);
             } else {
-                g_buildingRoad = new Road(m_x, m_y);
-                g_buildingRoad->setNode1(this);
-                scene()->addItem(g_buildingRoad);
+                buildingRoad = new Road(m_x, m_y);
+                mapScene->setBuildingRoad(buildingRoad);
+                buildingRoad->setNode1(this);
+                scene()->addItem(buildingRoad);
             }
         } else if (g_mode == DelMode) {
             g_map->delNode(this);

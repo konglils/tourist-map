@@ -96,10 +96,12 @@ void MapView::mousePressEvent(QMouseEvent *event) {
         } else if (g_mode == RoadMode) {
             event->ignore();
             QGraphicsView::mousePressEvent(event); // 事件进入 Node，则 accept；进入 Road，则 ignore
-            if (!event->isAccepted() && g_buildingRoad) {
-                g_buildingRoad->lineTo(x, y);
-                g_buildingRoad->render();
-                g_buildingRoad->update();
+            auto mapScene = static_cast<MapScene *>(scene());
+            auto buildingRoad = mapScene->buildingRoad();
+            if (!event->isAccepted() && buildingRoad) {
+                buildingRoad->lineTo(x, y);
+                buildingRoad->render();
+                buildingRoad->update();
             }
         } else {
             QGraphicsView::mousePressEvent(event);
