@@ -45,8 +45,6 @@ void MapView::setNewMap(std::unique_ptr<TouristMap> map) {
     setTitle(g_map->name());
     setEnabled(true); // 设置 MapView 可操作
     resetTransform(); // 重置平移缩放
-    g_infoTip = new InfoTip;
-    scene()->addItem(g_infoTip);
 }
 
 void MapView::openFile(const QString &fileName) {

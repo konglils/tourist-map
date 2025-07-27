@@ -58,15 +58,17 @@ void Road::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 void Road::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     auto mapScene = static_cast<MapScene *>(scene());
     auto text = QString("%1 m").arg((int)round(m_distance * mapScene->scale()));
-    g_infoTip->showingText(text);
+    mapScene->infoTip()->showingText(text);
 }
 
 void Road::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
-    g_infoTip->showAt(mapToScene(event->pos()));
+    auto mapScene = static_cast<MapScene *>(scene());
+    mapScene->infoTip()->showAt(mapToScene(event->pos()));
 }
 
 void Road::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    g_infoTip->hide();
+    auto mapScene = static_cast<MapScene *>(scene());
+    mapScene->infoTip()->hide();
 }
 
 void Road::setChecked(bool checked) {

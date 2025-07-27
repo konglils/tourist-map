@@ -1,6 +1,5 @@
+#include "mapscene.h"
 #include "spot.h"
-
-#include "global.h"
 
 #include <QGraphicsSceneMouseEvent>
 
@@ -15,15 +14,18 @@ Spot::Spot(double x, double y, const QString &name, const QString &description, 
 
 void Spot::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     auto text = QString("%1<br><br>%2").arg(m_name, m_description);
-    g_infoTip->showingText(text);
+    auto mapScene = static_cast<MapScene *>(scene());
+    mapScene->infoTip()->showingText(text);
 }
 
 void Spot::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
-    g_infoTip->showAt(event->pos());
+    auto mapScene = static_cast<MapScene *>(scene());
+    mapScene->infoTip()->showAt(event->pos());
 }
 
 void Spot::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    g_infoTip->hide();
+    auto mapScene = static_cast<MapScene *>(scene());
+    mapScene->infoTip()->hide();
 }
 
 void Spot::setChecked(bool checked) {

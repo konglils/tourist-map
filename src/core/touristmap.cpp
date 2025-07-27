@@ -158,7 +158,7 @@ void TouristMap::delRoad(Road *road) {
         std::erase(m_graph[node2->index()], std::make_pair(node1, road));
     }
     m_scene->removeItem(road);
-    g_infoTip->hide();
+    m_scene->infoTip()->hide();
     delete road;
 }
 
