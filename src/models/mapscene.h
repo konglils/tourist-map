@@ -19,6 +19,8 @@ public:
 
     void showSpotEditor(QPointF pos);
 
+    void hideSpotEditor();
+
 private:
     TouristMap *m_map;
 

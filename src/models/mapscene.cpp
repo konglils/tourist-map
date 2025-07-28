@@ -41,3 +41,8 @@ void MapScene::showSpotEditor(QPointF pos) {
     m_editorProxy->show();
     m_spotEditor->focusName();
 }
+
+void MapScene::hideSpotEditor() {
+    m_spotEditor->clear();
+    m_editorProxy->hide();
+}

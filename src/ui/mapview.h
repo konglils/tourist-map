@@ -19,7 +19,6 @@ public:
     void createMap(const QString &imageFileName, const QString &mapName, double mapScale); // 创建新地图
     void setNewMap(TouristMap *map); // 设置显示哪个地图
     Mode mode() { return m_map->mode(); }
-    void setMode(Mode mode) { m_map->setMode(mode); }
     void changeMode(Mode mode);
 
 protected:

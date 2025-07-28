@@ -86,7 +86,7 @@ void MainWindow::setupActions() {
     auto toggle = [this](QAction *action) {
         if (action == m_currentToggled) {
             action->setChecked(false);
-            m_view->setMode(SelectMode);
+            m_view->changeMode(SelectMode);
             m_currentToggled = nullptr;
         } else {
             if (m_currentToggled) {

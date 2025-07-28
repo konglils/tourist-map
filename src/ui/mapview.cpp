@@ -165,8 +165,17 @@ void MapView::wheelEvent(QWheelEvent *event) {
 }
 
 void MapView::changeMode(Mode newMode) {
-    if (mode() == SelectMode && m_map) {
-        m_map->clear();
+    switch (mode()) {
+    case SelectMode:
+        if (m_map) {
+            m_map->clear();
+        }
+        break;
+    case SpotMode:
+        m_scene->hideSpotEditor();
+        break;
+    default:
+        break;
     }
-    setMode(newMode);
+    m_map->setMode(newMode);
 }
