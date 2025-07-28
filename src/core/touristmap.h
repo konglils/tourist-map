@@ -45,6 +45,14 @@
 #include <QGraphicsScene>
 #include <QString>
 
+enum Mode {
+    SelectMode,
+    NodeMode,
+    SpotMode,
+    RoadMode,
+    DelMode,
+};
+
 class MapView;
 
 class TouristMap
@@ -65,6 +73,9 @@ public:
     void delNode(Node *node); // 删除结点
     void delRoad(Road *road); // 删除道路
     void pressNode(Node *node); // 按下节点
+    void pressRoad(Road *road);
+    Mode mode() { return m_mode; }
+    void setMode(Mode mode) { m_mode = mode; }
 
 private:
     QString m_fileName; // 文件名
@@ -77,6 +88,7 @@ private:
     std::vector<double> m_shortestDistance; // 最短距离
     std::vector<std::pair<Node *, Road *>> m_shortestPath; // 最短路径
     std::vector<Node *> m_nodes; // 用于确定 node 对应的索引
+    Mode m_mode; // 模式
 
     bool loadImage(); // 加载图片到 scene
     bool readImage(QDataStream &in); // 读取图片

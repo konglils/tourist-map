@@ -41,31 +41,78 @@ bool TouristMap::setImage(const QString &imageFileName) {
 }
 
 void TouristMap::pressNode(Node *node) {
-    node->setChecked(!node->isChecked());
-    node->update();
+    switch (m_mode) {
+    case SelectMode: {
+        node->setChecked(!node->isChecked());
+        node->update();
 
-    // 第一次点击节点，会将该节点设为起点，第二次点击另外的节点，会设为终点，然后自动在地图上标注出最短路径
-    // 再次点击起点，会重置地图；再次点击终点，会取消选择终点；点击另外的节点，会设置新的终点
-    if (node->isChecked()) { // 从未选中到选中
-        if (m_source == nullptr) {
-            calShortestPath(node);
-        } else if (m_destination == nullptr) {
-            setPathShow(node, true);
-            m_destination = node;
+        // 第一次点击节点，会将该节点设为起点，第二次点击另外的节点，会设为终点，然后自动在地图上标注出最短路径
+        // 再次点击起点，会重置地图；再次点击终点，会取消选择终点；点击另外的节点，会设置新的终点
+        if (node->isChecked()) { // 从未选中到选中
+            if (m_source == nullptr) {
+                calShortestPath(node);
+            } else if (m_destination == nullptr) {
+                setPathShow(node, true);
+                m_destination = node;
+            } else {
+                setPathShow(m_destination, false);
+                m_destination->setChecked(false);
+                m_destination->update();
+                setPathShow(node, true);
+                m_destination = node;
+            }
         } else {
-            setPathShow(m_destination, false);
-            m_destination->setChecked(false);
-            m_destination->update();
-            setPathShow(node, true);
-            m_destination = node;
+            if (node == m_source) {
+                clear();
+            } else {
+                setPathShow(node, false);
+                m_destination = nullptr;
+            }
         }
-    } else {
-        if (node == m_source) {
-            clear();
+        break;
+    }
+
+    case RoadMode: {
+        // 路只能以节点开始和结束
+        auto buildingRoad = m_scene->buildingRoad();
+        if (buildingRoad) {
+            buildingRoad->lineTo(node->x(), node->y());
+            buildingRoad->render();
+            buildingRoad->update();
+            buildingRoad->setNode2(node);
+            g_map->addRoad(buildingRoad);
+            m_scene->setBuildingRoad(nullptr);
         } else {
-            setPathShow(node, false);
-            m_destination = nullptr;
+            buildingRoad = new Road(node->x(), node->y());
+            m_scene->setBuildingRoad(buildingRoad);
+            buildingRoad->setNode1(node);
+            scene()->addItem(buildingRoad);
         }
+        break;
+    }
+
+    case DelMode:
+        delNode(node);
+        break;
+
+    default:
+        break;
+    }
+}
+
+void TouristMap::pressRoad(Road *road) {
+    switch (m_mode) {
+    case SelectMode:
+        road->setChecked(!road->isChecked());
+        road->update();
+        break;
+
+    case DelMode:
+        delRoad(road);
+        break;
+
+    default:
+        break;
     }
 }
 

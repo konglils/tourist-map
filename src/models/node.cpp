@@ -35,28 +35,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        if (g_mode == SelectMode) {
-            g_map->pressNode(this);
-        } else if (g_mode == RoadMode) {
-            // 路只能以节点开始和结束
-            auto mapScene = static_cast<MapScene *>(scene());
-            auto buildingRoad = mapScene->buildingRoad();
-            if (buildingRoad) {
-                buildingRoad->lineTo(m_x, m_y);
-                buildingRoad->render();
-                buildingRoad->update();
-                buildingRoad->setNode2(this);
-                g_map->addRoad(buildingRoad);
-                mapScene->setBuildingRoad(nullptr);
-            } else {
-                buildingRoad = new Road(m_x, m_y);
-                mapScene->setBuildingRoad(buildingRoad);
-                buildingRoad->setNode1(this);
-                scene()->addItem(buildingRoad);
-            }
-        } else if (g_mode == DelMode) {
-            g_map->delNode(this);
-        }
+        g_map->pressNode(this);
     }
 }
 

@@ -44,14 +44,7 @@ void Road::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Road::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        if (g_mode == SelectMode) {
-            setChecked(!isChecked());
-            update();
-        } else if (g_mode == RoadMode) {
-            event->ignore();
-        } else if (g_mode == DelMode) {
-            g_map->delRoad(this);
-        }
+        g_map->pressRoad(this);
     }
 }
 

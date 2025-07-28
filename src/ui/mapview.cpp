@@ -81,17 +81,17 @@ void MapView::createMap(const QString &imageFileName, const QString &mapName, do
 void MapView::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         auto [x, y] = mapToScene(event->pos());
-        if (g_mode == NodeMode) {
+        if (g_map->mode() == NodeMode) {
             auto node = new Node(x, y);
             g_map->addNode(node);
             scene()->addItem(node);
-        } else if (g_mode == SpotMode) {
+        } else if (g_map->mode() == SpotMode) {
             event->ignore();
             QGraphicsView::mousePressEvent(event);
             if (!event->isAccepted()) {
                 inputInfo(mapToScene(event->pos()));
             }
-        } else if (g_mode == RoadMode) {
+        } else if (g_map->mode() == RoadMode) {
             event->ignore();
             QGraphicsView::mousePressEvent(event); // 事件进入 Node，则 accept；进入 Road，则 ignore
             auto mapScene = static_cast<MapScene *>(scene());

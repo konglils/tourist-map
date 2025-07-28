@@ -87,7 +87,7 @@ void MainWindow::setupActions() {
     auto toggle = [this](QAction *action) {
         if (action == m_currentToggled) {
             action->setChecked(false);
-            g_mode = SelectMode;
+            g_map->setMode(SelectMode);
             m_currentToggled = nullptr;
         } else {
             if (m_currentToggled) {
@@ -107,10 +107,10 @@ void MainWindow::setupActions() {
 
     for (auto [action, mode] : actionModes) {
         connect(action, &QAction::triggered, [=]() {
-            if (g_mode == SelectMode && g_map) {
+            if (g_map->mode() == SelectMode && g_map) {
                 g_map->clear();
             }
-            g_mode = mode;
+            g_map->setMode(mode);
             toggle(action);
         });
     }
