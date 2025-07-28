@@ -1,15 +1,25 @@
 #include "touristmap.h"
 
+#include "infotip.h"
+#include "mapscene.h"
 #include "node.h"
-#include "spot.h"
 #include "road.h"
+#include "spot.h"
 
-#include <queue>
-
+#include <QByteArray>
+#include <QDataStream>
 #include <QFile>
 #include <QFileDialog>
-#include <QGraphicsScene>
+#include <QIODevice>
+#include <QImage>
+#include <QGraphicsItem>
+#include <QGraphicsPixmapItem>
+#include <QPixmap>
+#include <QString>
 #include <QStringDecoder>
+#include <QtTypes>
+
+#include <queue>
 
 TouristMap::TouristMap()
     : m_scene(new MapScene{this})

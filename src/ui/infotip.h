@@ -3,6 +3,11 @@
 
 #include <QGraphicsTextItem>
 
+#include <QPointF>
+#include <QString>
+
+class QGraphicsItem;
+
 class InfoTip : public QGraphicsTextItem
 {
 public:

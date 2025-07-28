@@ -2,10 +2,16 @@
 #define ROAD_H
 
 #include "mapitem.h"
-#include "node.h"
 
-#include <QGraphicsProxyWidget>
-#include <QLabel>
+#include <QColor>
+#include <QGraphicsItem>
+#include <QPainterPath>
+#include <QRectF>
+
+class Node;
+class QGraphicsSceneHoverEvent;
+class QGraphicsSceneMouseEvent;
+class QStyleOptionGraphicsItem;
 
 class Road : public MapItem
 {

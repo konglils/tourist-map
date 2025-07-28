@@ -2,7 +2,6 @@
 
 #include "touristmap.h"
 
-#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 

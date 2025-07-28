@@ -1,10 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "mapview.h"
-
-#include <QHBoxLayout>
 #include <QMainWindow>
+
+class MapView;
+class QAction;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

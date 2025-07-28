@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include "mapview.h"
+#include "mode.h"
 #include "newmapwindow.h"
 
 #include <QFileDialog>

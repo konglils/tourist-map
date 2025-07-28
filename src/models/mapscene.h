@@ -1,11 +1,12 @@
 #ifndef MAPSCENE_H
 #define MAPSCENE_H
 
-#include "infotip.h"
-#include "spoteditor.h"
-
+#include <QPointF>
 #include <QGraphicsScene>
 
+class InfoTip;
+class QGraphicsProxyWidget;
+class SpotEditor;
 class TouristMap;
 
 class MapScene : public QGraphicsScene

@@ -3,6 +3,11 @@
 
 #include "node.h"
 
+#include <QGraphicsItem>
+#include <QString>
+
+class QGraphicsSceneHoverEvent;
+
 class Spot : public Node
 {
 public:

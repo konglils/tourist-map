@@ -1,6 +1,8 @@
 #include "mapscene.h"
 
+#include "infotip.h"
 #include "spot.h"
+#include "spoteditor.h"
 #include "touristmap.h"
 
 #include <QGraphicsProxyWidget>

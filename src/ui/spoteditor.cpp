@@ -1,7 +1,10 @@
 #include "spoteditor.h"
 
 #include <QEvent>
-#include <QKeyEvent>
+#include <QLineEdit>
+#include <QMouseEvent>
+#include <QObject>
+#include <QVBoxLayout>
 
 SpotEditor::SpotEditor(QWidget *parent)
     : QWidget{parent}
@@ -50,4 +53,17 @@ bool SpotEditor::eventFilter(QObject *watched, QEvent *event) {
 void SpotEditor::clear() {
     m_name->clear();
     m_description->clear();
+}
+
+QString SpotEditor::name() const {
+    return m_name->text();
+}
+
+QString SpotEditor::description() const {
+    return m_description->text();
+}
+
+void SpotEditor::focusName() {
+    setFocus();
+    m_name->setFocus();
 }

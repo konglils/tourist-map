@@ -2,6 +2,9 @@
 #define NEWMAPWINDOW_H
 
 #include <QDialog>
+#include <QString>
+
+class QWidget;
 
 class NewMapWindow : public QDialog
 {

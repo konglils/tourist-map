@@ -1,18 +1,19 @@
 #ifndef MAPITEM_H
 #define MAPITEM_H
 
-#include "mapscene.h"
-
 #include <QGraphicsItem>
+
+class MapScene;
+class TouristMap;
 
 class MapItem : public QGraphicsItem
 {
 protected:
     MapItem(QGraphicsItem *parent = nullptr);
 
-    MapScene *mapScene() { return static_cast<MapScene *>(scene()); }
+    MapScene *mapScene();
 
-    TouristMap *map() { return mapScene()->map(); }
+    TouristMap *map();
 };
 
 #endif // MAPITEM_H

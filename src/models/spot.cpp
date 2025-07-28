@@ -1,7 +1,9 @@
-#include "mapscene.h"
 #include "spot.h"
 
-#include <QGraphicsSceneMouseEvent>
+#include "infotip.h"
+#include "mapscene.h"
+
+#include <QGraphicsSceneHoverEvent>
 
 Spot::Spot(double x, double y, const QString &name, const QString &description, QGraphicsItem *parent)
     : Node(x, y, parent)

@@ -39,20 +39,13 @@
  *    变长 坐标 途经点
  */
 
-#include "road.h"
+#include "mode.h"
 
-#include <QGraphicsScene>
 #include <QString>
 
 class MapScene;
-
-enum Mode {
-    SelectMode,
-    NodeMode,
-    SpotMode,
-    RoadMode,
-    DelMode,
-};
+class Node;
+class Road;
 
 class TouristMap
 {

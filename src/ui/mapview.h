@@ -1,10 +1,18 @@
 #ifndef MAPVIEW_H
 #define MAPVIEW_H
 
-#include "spoteditor.h"
-#include "touristmap.h"
+#include "mode.h"
 
 #include <QGraphicsView>
+#include <QPointF>
+#include <QString>
+
+class MapScene;
+class QMouseEvent;
+class QWheelEvent;
+class QWidget;
+class SpotEditor;
+class TouristMap;
 
 class MapView : public QGraphicsView
 {
@@ -18,8 +26,8 @@ public:
     void setTitle(const QString &name); // 设置窗口标题
     void createMap(const QString &imageFileName, const QString &mapName, double mapScale); // 创建新地图
     void setNewMap(TouristMap *map); // 设置显示哪个地图
-    Mode mode() { return m_map->mode(); }
     void changeMode(Mode mode);
+    Mode mode();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override; // 重写鼠标按下事件

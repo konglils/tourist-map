@@ -3,7 +3,16 @@
 
 #include "mapitem.h"
 
-class TouristMap;
+#include <QColor>
+#include <QGraphicsItem>
+#include <QPainterPath>
+#include <QRectF>
+#include <QtTypes>
+
+class QGraphicsSceneMouseEvent;
+class QPainter;
+class QStyleOptionGraphicsItem;
+class QWidget;
 
 class Node : public MapItem
 {

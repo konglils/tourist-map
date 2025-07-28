@@ -1,11 +1,11 @@
 #include "road.h"
 
+#include "infotip.h"
+#include "mapscene.h"
 #include "touristmap.h"
 
-#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
-#include <QToolTip>
 
 Road::Road(double x, double y, QGraphicsItem *parent)
     : MapItem(parent)

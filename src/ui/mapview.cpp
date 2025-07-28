@@ -1,16 +1,16 @@
 #include "mapview.h"
 
+#include "mapscene.h"
+#include "mode.h"
 #include "node.h"
 #include "road.h"
 #include "spoteditor.h"
 #include "touristmap.h"
 
-#include <QApplication>
-#include <QGraphicsProxyWidget>
-#include <QLineEdit>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QScrollBar>
+#include <QWheelEvent>
 
 MapView::MapView(QWidget *parent)
     : QGraphicsView(parent)
@@ -178,4 +178,8 @@ void MapView::changeMode(Mode newMode) {
         break;
     }
     m_map->setMode(newMode);
+}
+
+Mode MapView::mode() {
+    return m_map->mode();
 }

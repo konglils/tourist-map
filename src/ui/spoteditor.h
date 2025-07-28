@@ -1,18 +1,21 @@
 #ifndef SPOTEDITOR_H
 #define SPOTEDITOR_H
 
-#include <QLineEdit>
-#include <QVBoxLayout>
+#include <QString>
 #include <QWidget>
+
+class QEvent;
+class QLineEdit;
+class QMouseEvent;
 
 class SpotEditor : public QWidget
 {
     Q_OBJECT
 public:
     explicit SpotEditor(QWidget *parent = nullptr);
-    QString name() const { return m_name->text(); }
-    QString description() const { return m_description->text(); }
-    void focusName() { setFocus(); m_name->setFocus(); } // 聚焦在名称输入框
+    QString name() const;
+    QString description() const;
+    void focusName(); // 聚焦在名称输入框
     void clear();
 
 signals:
