@@ -42,7 +42,7 @@ void MapView::setNewMap(TouristMap *map) {
     }
     setScene(m_map->scene());
     m_scene = m_map->scene();
-    setTitle(m_map->name());
+    setTitle(m_map->title());
     setEnabled(true); // 设置 MapView 可操作
     resetTransform(); // 重置平移缩放
 }
@@ -66,11 +66,11 @@ void MapView::save() {
     }
 }
 
-void MapView::createMap(const QString &imageFileName, const QString &mapName, double mapScale) {
+void MapView::createMap(const QString &imageFileName, const QString &mapTitle, double mapScale) {
     auto map = new TouristMap;
     bool success = map->setImage(imageFileName);
     if (success) {
-        map->setName(mapName);
+        map->setTitle(mapTitle);
         map->setScale(mapScale);
         setNewMap(map);
     } else {

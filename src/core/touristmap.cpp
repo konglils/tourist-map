@@ -39,8 +39,8 @@ bool TouristMap::loadImage() {
     return true;
 }
 
-bool TouristMap::setImage(const QString &imageFileName) {
-    QFile file(imageFileName);
+bool TouristMap::setImage(const QString &imageFilePath) {
+    QFile file(imageFilePath);
     if (file.open(QIODevice::ReadOnly)) {
         m_image = file.readAll();
         return loadImage();
@@ -49,7 +49,7 @@ bool TouristMap::setImage(const QString &imageFileName) {
     }
 }
 
-void TouristMap::pressNode(Node *node) {
+void TouristMap::clickNode(Node *node) {
     switch (m_mode) {
     case SelectMode: {
         node->setChecked(!node->isChecked());
@@ -107,7 +107,7 @@ void TouristMap::pressNode(Node *node) {
     }
 }
 
-void TouristMap::pressRoad(Road *road) {
+void TouristMap::clickRoad(Road *road) {
     switch (m_mode) {
     case SelectMode:
         road->setChecked(!road->isChecked());
@@ -256,8 +256,8 @@ bool readFormatInfo(QDataStream &in) {
     return true;
 }
 
-bool TouristMap::openFile(const QString &fileName) {
-    QFile file(fileName);
+bool TouristMap::openFile(const QString &filePath) {
+    QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         return false;
     }
@@ -285,7 +285,7 @@ bool TouristMap::openFile(const QString &fileName) {
     m_shortestPath.resize(numAllNode);
     m_nodes.resize(numAllNode);
 
-    if (!readString(in, m_name) ||
+    if (!readString(in, m_title) ||
         !readNode(in, 0, numNode) ||
         !readSpot(in, numNode, numSpot) ||
         !readRoad(in, numRoad) ||
@@ -294,7 +294,7 @@ bool TouristMap::openFile(const QString &fileName) {
         return false;
     }
 
-    m_fileName = fileName;
+    m_filePath = filePath;
     return true;
 }
 
@@ -381,14 +381,14 @@ bool writeString(QDataStream &out, const QString &str) {
 }
 
 bool TouristMap::save() {
-    if (m_fileName.isNull()) {
-        m_fileName = QFileDialog::getSaveFileName(
+    if (m_filePath.isNull()) {
+        m_filePath = QFileDialog::getSaveFileName(
             nullptr, "保存", "", "地图 (*.map)");
     }
-    if (m_fileName.isNull()) {
+    if (m_filePath.isNull()) {
         return true;
     } else {
-        return saveFile(m_fileName);
+        return saveFile(m_filePath);
     }
 }
 
@@ -424,8 +424,8 @@ void writeFormatInfo(QDataStream &out) {
     out << magicNumber;
 }
 
-bool TouristMap::saveFile(const QString &fileName) {
-    QFile file(fileName);
+bool TouristMap::saveFile(const QString &filePath) {
+    QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
         return false;
     }
@@ -457,11 +457,11 @@ bool TouristMap::saveFile(const QString &fileName) {
         calShortestPath(m_source);
     }
 
-    if (!writeString(out, m_name) ||
+    if (!writeString(out, m_title) ||
         !writeNode(out, 0, numNode) ||
         !writeSpot(out, numNode, numSpot) ||
         !writeRoad(out) ||
-        !writePicture(out))
+        !writeImage(out))
     {
         return false;
     }
@@ -516,7 +516,7 @@ bool TouristMap::writeRoad(QDataStream &out) {
     return true;
 }
 
-bool TouristMap::writePicture(QDataStream &out) {
+bool TouristMap::writeImage(QDataStream &out) {
     qint64 bytesWrite = out.writeRawData(m_image.data(), m_image.size());
     return bytesWrite == m_image.size();
 }

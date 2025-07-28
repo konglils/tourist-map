@@ -34,7 +34,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        map()->pressNode(this);
+        map()->clickNode(this);
     }
 }
 

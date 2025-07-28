@@ -1,7 +1,29 @@
 #ifndef TOURISTMAP_H
 #define TOURISTMAP_H
 
-/* 文件格式
+#include "mode.h"
+
+#include <QString>
+
+class MapScene;
+class Node;
+class Road;
+
+/**
+ * @brief 打开或保存地图文件；修改地图内容；计算最短路径
+ *
+ * 一个 TouristMap 对应一个场景（MapScene），读取文件产生的图形保存在场景里，
+ * MapView 可以显示该场景。
+ *
+ * 节点：包括路口和地点，抽象出来方便图的计算
+ *
+ * 路口：拥有坐标
+ *
+ * 地点：拥有坐标、名称和描述
+ *
+ * 道路：双行道。保存连接的两个节点。可以是折线，保存折线上所有点的坐标
+ *
+ * 地图文件格式
  * 大端序
  * 12 字节 TOURIST MAP\0
  *  4 字节 0x52391391
@@ -38,66 +60,130 @@
  *  8 字节 u64 途经点数
  *    变长 坐标 途经点
  */
-
-#include "mode.h"
-
-#include <QString>
-
-class MapScene;
-class Node;
-class Road;
-
 class TouristMap
 {
 public:
     TouristMap();
+
+    /**
+     * @brief 打开地图文件，将二进制数据转换为图形
+     * @param filePath 文件路径
+     * @return 打开成功或失败
+     */
+    bool openFile(const QString &filePath);
+
+    /**
+     * @brief 将当前地图图形转换为二进制数据，保存为地图文件
+     * @param filePath 文件路径
+     * @return 保存成功或失败
+     */
+    bool saveFile(const QString &filePath);
+
+    /**
+     * @brief 保存当前地图
+     * @return 保存成功或失败
+     */
+    bool save();
+
+    /**
+     * @brief 向当前地图添加节点
+     * @param node 节点
+     */
+    void addNode(Node *node);
+
+    /**
+     * @brief 向当前地图添加道路
+     * @param road 道路
+     */
+    void addRoad(Road *road);
+
+    /**
+     * @brief 从当前地图删除节点
+     * @param node 节点
+     */
+    void delNode(Node *node);
+
+    /**
+     * @brief 从当前地图删除道路
+     * @param road 道路
+     */
+    void delRoad(Road *road);
+
+    /**
+     * @brief 点击节点
+     * @param node 节点
+     */
+    void clickNode(Node *node);
+
+    /**
+     * @brief 点击道路
+     * @param road 道路
+     */
+    void clickRoad(Road *road);
+
+    /**
+     * @brief 清除地图选中状态
+     */
+    void clear();
+
+    /**
+     * @brief 为当前地图设置参考图
+     * @param 图片文件路径
+     * @return 是否成功
+     */
+    bool setImage(const QString &imageFilePath);
+
     MapScene *scene() { return m_scene; }
-    bool openFile(const QString &fileName); // 打开文件
-    bool saveFile(const QString &fileName); // 保存文件
-    bool save(); // 保存
-    QString name() const { return m_name; }
-    bool setImage(const QString &imageFileName); // 设置参考图
-    void setName(const QString &name) { m_name = name;}
-    double scale() { return m_scale; }
-    void setScale(double scale) { m_scale = scale; }
-    void clear(); // 清除地图选中状态
-    void addNode(Node *node); // 添加结点
-    void addRoad(Road *road); // 添加道路
-    void delNode(Node *node); // 删除结点
-    void delRoad(Road *road); // 删除道路
-    void pressNode(Node *node); // 按下节点
-    void pressRoad(Road *road);
-    Mode mode() { return m_mode; }
+
     void setMode(Mode mode) { m_mode = mode; }
+    Mode mode() { return m_mode; }
+
+    void setTitle(const QString &title) { m_title = title;}
+    QString title() const { return m_title; }
+
+    void setScale(double scale) { m_scale = scale; }
+    double scale() { return m_scale; }
+
     Road *buildingRoad() { return m_buildingRoad; }
 
 private:
-    QString m_fileName; // 文件名
-    QByteArray m_image; // 参考图原始数据
-    QString m_name; // 地图名称
-    MapScene *m_scene; // 对应的 scene
-    std::vector<std::vector<std::pair<Node *, Road *>>> m_graph; // 图
-    Node *m_source = nullptr; // 初始未设置源点
-    Node *m_destination = nullptr; // 初始未设置目的地
-    std::vector<double> m_shortestDistance; // 最短距离
-    std::vector<std::pair<Node *, Road *>> m_shortestPath; // 最短路径
-    std::vector<Node *> m_nodes; // 用于确定 node 对应的索引
-    Mode m_mode; // 模式
-    Road *m_buildingRoad = nullptr; // 正在构建的 road
+    bool readImage(QDataStream &in);
+    bool loadImage();
+    bool readNode(QDataStream &in, quint64 startIndex, quint64 numNode);
+    bool readSpot(QDataStream &in, quint64 startIndex, quint64 numSpot);
+    bool readRoad(QDataStream &in, quint64 numRoad);
+    bool writeImage(QDataStream &out);
+    bool writeNode(QDataStream &out, quint64 startIndex, quint64 numNode);
+    bool writeSpot(QDataStream &out, quint64 startIndex, quint64 numSpot);
+    bool writeRoad(QDataStream &out);
+
+    /// 重新计算图中元素数量并更新节点的索引
+    std::tuple<quint64, quint64, quint64> reCalItems();
+
+    void calShortestPath(Node *source);
+    void setPathShow(Node *destination, bool show);
+
+    MapScene *m_scene;
+
+    Mode m_mode;
+
+    QString m_title;
     double m_scale;
 
-    bool loadImage(); // 加载图片到 scene
-    bool readImage(QDataStream &in); // 读取图片
-    void calShortestPath(Node *source); // 计算最短路
-    void setPathShow(Node *destination, bool show); // 设置路径是否可见
-    bool readNode(QDataStream &in, quint64 startIndex, quint64 numNode); // 读取路口
-    bool readSpot(QDataStream &in, quint64 startIndex, quint64 numSpot); // 读取地点
-    bool readRoad(QDataStream &in, quint64 numRoad); // 读取道路
-    std::tuple<quint64, quint64, quint64> reCalItems(); // 重新计算图中元素数量并更新 node 的索引
-    bool writePicture(QDataStream &out); // 写入图片
-    bool writeNode(QDataStream &out, quint64 startIndex, quint64 numNode); // 写入路口
-    bool writeSpot(QDataStream &out, quint64 startIndex, quint64 numSpot); // 写入地点
-    bool writeRoad(QDataStream &out); // 写入道路
+    QString m_filePath;
+    QByteArray m_image; ///< 参考图原始数据
+
+    /// 每个节点都对应了一个索引，保存索引对应的节点
+    std::vector<Node *> m_nodes;
+
+    std::vector<std::vector<std::pair<Node *, Road *>>> m_graph; ///< 图
+    Node *m_source = nullptr;
+    Node *m_destination = nullptr;
+    std::vector<double> m_shortestDistance;
+    /// 保存节点在最短路树中的父节点和连接的道路，这样就可以一路回溯到源点
+    std::vector<std::pair<Node *, Road *>> m_shortestPath;
+
+    Road *m_buildingRoad = nullptr;
 };
 
 #endif // TOURISTMAP_H

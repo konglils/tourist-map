@@ -24,7 +24,7 @@ public:
     void save(); // 保存地图
     void enlarge(bool flag); // 放大或缩小
     void setTitle(const QString &name); // 设置窗口标题
-    void createMap(const QString &imageFileName, const QString &mapName, double mapScale); // 创建新地图
+    void createMap(const QString &imageFileName, const QString &mapTitle, double mapScale); // 创建新地图
     void setNewMap(TouristMap *map); // 设置显示哪个地图
     void changeMode(Mode mode);
     Mode mode();

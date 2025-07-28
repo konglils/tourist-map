@@ -44,7 +44,7 @@ void Road::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Road::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        map()->pressRoad(this);
+        map()->clickRoad(this);
     }
 }
 

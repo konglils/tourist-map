@@ -72,7 +72,7 @@ void MainWindow::setupActions() {
         if (confirm) {
             m_view->createMap(
                 window.getImageFileName(),
-                window.getMapName(),
+                window.getMapTitle(),
                 window.getScale());
         }
     });
