@@ -133,18 +133,18 @@ public:
      */
     bool setImage(const QString &imageFilePath);
 
-    MapScene *scene() { return m_scene; }
+    MapScene *scene() const { return m_scene; }
 
     void setMode(Mode mode) { m_mode = mode; }
-    Mode mode() { return m_mode; }
+    Mode mode() const { return m_mode; }
 
     void setTitle(const QString &title) { m_title = title;}
     QString title() const { return m_title; }
 
     void setScale(double scale) { m_scale = scale; }
-    double scale() { return m_scale; }
+    double scale() const { return m_scale; }
 
-    Road *buildingRoad() { return m_buildingRoad; }
+    Road *buildingRoad() const { return m_buildingRoad; }
 
 private:
     bool readImage(QDataStream &in);

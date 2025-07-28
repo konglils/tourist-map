@@ -78,17 +78,17 @@ void MainWindow::setupActions() {
     });
 
     connect(zoomInAction, &QAction::triggered, [this]() {
-        m_view->enlarge(true);
+        m_view->zoom(true);
     });
 
     connect(zoomOutAction, &QAction::triggered, [this]() {
-        m_view->enlarge(false);
+        m_view->zoom(false);
     });
 
     auto toggle = [this](QAction *action) {
         if (action == m_currentToggled) {
             action->setChecked(false);
-            m_view->changeMode(SelectMode);
+            m_view->setMode(SelectMode);
             m_currentToggled = nullptr;
         } else {
             if (m_currentToggled) {
@@ -108,7 +108,7 @@ void MainWindow::setupActions() {
 
     for (auto [action, mode] : actionModes) {
         connect(action, &QAction::triggered, [=, this]() {
-            m_view->changeMode(mode);
+            m_view->setMode(mode);
             toggle(action);
         });
     }

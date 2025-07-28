@@ -14,36 +14,74 @@ class QWidget;
 class SpotEditor;
 class TouristMap;
 
+/**
+ * @brief 显示场景和界面交互
+ */
 class MapView : public QGraphicsView
 {
     Q_OBJECT
 public:
-    MapView(QWidget *parent = nullptr);
-    void open(); // 打开地图
-    void openFile(const QString &fileName); // 打开地图文件
-    void save(); // 保存地图
-    void enlarge(bool flag); // 放大或缩小
-    void setTitle(const QString &name); // 设置窗口标题
-    void createMap(const QString &imageFileName, const QString &mapTitle, double mapScale); // 创建新地图
-    void setNewMap(TouristMap *map); // 设置显示哪个地图
-    void changeMode(Mode mode);
-    Mode mode();
+    explicit MapView(QWidget *parent = nullptr);
+
+    /**
+     * @brief 显示指定地图
+     * @param map 地图
+     */
+    void showMap(TouristMap *map);
+
+    /**
+     * @brief 在视口中心缩放
+     * @param zoomIn 是否放大
+     */
+    void zoom(bool zoomIn);
+
+    /**
+     * @brief 打开默认地图
+     */
+    void open();
+
+    /**
+     * @brief 打开地图文件
+     * @param filePath 文件路径
+     */
+    void openFile(const QString &filePath);
+
+    /**
+     * @brief 保存当前地图
+     */
+    void save();
+
+    /**
+     * @brief 创建新地图
+     * @param imageFilePath 参考图路径
+     * @param mapTitle 地图标题
+     * @param mapScale 地图比例尺
+     */
+    void createMap(const QString &imageFilePath,
+                   const QString &mapTitle,
+                   double mapScale);
+
+    void setMode(Mode mode);
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override; // 重写鼠标按下事件
-    void mouseMoveEvent(QMouseEvent *event) override; // 重写鼠标移动事件
-    void mouseReleaseEvent(QMouseEvent *event) override; // 重写鼠标释放事件
-    void wheelEvent(QWheelEvent *event) override; // 重写鼠标滚轮事件
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 private:
-    static constexpr double m_SCALING = 1.2; // 放大缩小的比例
-    bool m_dragging = false; // 鼠标是否正在拖拽
-    QPointF m_mousePos; // 鼠标位置，用于编写拖拽逻辑
-    SpotEditor *m_spotEditor;
+    /// 在视口指定位置缩放
+    void zoom(bool zoomIn, QPointF pos);
+
+    void setTitle(const QString &title);
+
+    static constexpr double zoomFactor = 1.2;
+
+    bool m_dragging = false; ///< 鼠标是否正在拖拽
+    QPointF m_mousePos;
+
     TouristMap *m_map = nullptr;
     MapScene *m_scene = nullptr;
-
-    void enlarge(bool flag, QPointF mousePos); // 指定位置处缩放
 };
 
 #endif // MAPVIEW_H

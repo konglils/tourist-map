@@ -14,25 +14,17 @@
 
 MapView::MapView(QWidget *parent)
     : QGraphicsView(parent)
-    , m_spotEditor(new SpotEditor)
 {
-    setEnabled(false); // 默认不可操作，因为没有还没有场景
-    setRenderHint(QPainter::Antialiasing); // 抗锯齿
+    // 开始不可操作，因为没有还没有场景
+    setEnabled(false);
+
+    setRenderHint(QPainter::Antialiasing);
+
+    // 关闭默认缩放逻辑，后续自定义缩放
     setTransformationAnchor(QGraphicsView::NoAnchor);
-
-    m_spotEditor->setFixedSize(150, 50);
 }
 
-void MapView::setTitle(const QString &name) {
-    window()->setWindowTitle(QString("%1 - 导游咨询").arg(name));
-}
-
-void MapView::open() {
-    // TODO 打开默认地图
-    openFile("/home/cyber/Desktop/ecjtu.map");
-}
-
-void MapView::setNewMap(TouristMap *map) {
+void MapView::showMap(TouristMap *map) {
     delete m_map;
     m_map = map;
     auto oldScene = scene();
@@ -47,11 +39,19 @@ void MapView::setNewMap(TouristMap *map) {
     resetTransform(); // 重置平移缩放
 }
 
-void MapView::openFile(const QString &fileName) {
+void MapView::zoom(bool zoomIn) {
+    zoom(zoomIn, viewport()->rect().center());
+}
+
+void MapView::open() {
+    openFile("/home/cyber/Desktop/ecjtu.map");
+}
+
+void MapView::openFile(const QString &filePath) {
     auto map = new TouristMap;
-    bool success = map->openFile(fileName);
+    bool success = map->openFile(filePath);
     if (success) {
-        setNewMap(map);
+        showMap(map);
     } else {
         QMessageBox::critical(this, "错误", "地图打开失败");
     }
@@ -66,16 +66,32 @@ void MapView::save() {
     }
 }
 
-void MapView::createMap(const QString &imageFileName, const QString &mapTitle, double mapScale) {
+void MapView::createMap(const QString &imageFilePath,
+                        const QString &mapTitle,
+                        double mapScale) {
     auto map = new TouristMap;
-    bool success = map->setImage(imageFileName);
+    bool success = map->setImage(imageFilePath);
     if (success) {
         map->setTitle(mapTitle);
         map->setScale(mapScale);
-        setNewMap(map);
+        showMap(map);
     } else {
         QMessageBox::critical(this, "错误", "图片读取失败");
     }
+}
+
+void MapView::setMode(Mode newMode) {
+    switch (m_map->mode()) {
+    case SelectMode:
+        m_map->clear();
+        break;
+    case SpotMode:
+        m_scene->hideSpotEditor();
+        break;
+    default:
+        break;
+    }
+    m_map->setMode(newMode);
 }
 
 void MapView::mousePressEvent(QMouseEvent *event) {
@@ -134,12 +150,15 @@ void MapView::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
-void MapView::enlarge(bool flag) {
-    enlarge(flag, viewport()->rect().center());
+void MapView::wheelEvent(QWheelEvent *event) {
+    QPoint angle = event->angleDelta();
+    if (!angle.isNull()) {
+        zoom(angle.y() > 0, event->position());
+    }
 }
 
-void MapView::enlarge(bool flag, QPointF mousePos) {
-    double scal = flag ? m_SCALING : 1 / m_SCALING;
+void MapView::zoom(bool flag, QPointF mousePos) {
+    double scal = flag ? zoomFactor : 1 / zoomFactor;
 
     auto [x, y] = mapToScene(mousePos.toPoint());
     double mx = x * transform().m11();
@@ -157,29 +176,6 @@ void MapView::enlarge(bool flag, QPointF mousePos) {
     update();
 }
 
-void MapView::wheelEvent(QWheelEvent *event) {
-    QPoint angle = event->angleDelta();
-    if (!angle.isNull()) {
-        enlarge(angle.y() > 0, event->position());
-    }
-}
-
-void MapView::changeMode(Mode newMode) {
-    switch (mode()) {
-    case SelectMode:
-        if (m_map) {
-            m_map->clear();
-        }
-        break;
-    case SpotMode:
-        m_scene->hideSpotEditor();
-        break;
-    default:
-        break;
-    }
-    m_map->setMode(newMode);
-}
-
-Mode MapView::mode() {
-    return m_map->mode();
+void MapView::setTitle(const QString &title) {
+    window()->setWindowTitle(QString("%1 - 导游咨询").arg(title));
 }
