@@ -13,9 +13,11 @@ public:
     QString name() const { return m_name->text(); }
     QString description() const { return m_description->text(); }
     void focusName() { setFocus(); m_name->setFocus(); } // 聚焦在名称输入框
+    void clear();
 
 signals:
-    void inputEnd(bool focusOut); // 输入结束信号
+    // void inputEnd(bool focusOut); // 输入结束信号
+    void inputEnd();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

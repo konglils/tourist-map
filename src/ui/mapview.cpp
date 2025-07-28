@@ -1,7 +1,6 @@
 #include "mapview.h"
 
 #include "node.h"
-#include "spot.h"
 #include "road.h"
 #include "spoteditor.h"
 #include "touristmap.h"
@@ -42,6 +41,7 @@ void MapView::setNewMap(TouristMap *map) {
         oldScene->deleteLater();
     }
     setScene(m_map->scene());
+    m_scene = m_map->scene();
     setTitle(m_map->name());
     setEnabled(true); // 设置 MapView 可操作
     resetTransform(); // 重置平移缩放
@@ -89,7 +89,7 @@ void MapView::mousePressEvent(QMouseEvent *event) {
             event->ignore();
             QGraphicsView::mousePressEvent(event);
             if (!event->isAccepted()) {
-                inputInfo(mapToScene(event->pos()));
+                m_scene->showSpotEditor(mapToScene(event->pos()));
             }
         } else if (m_map->mode() == RoadMode) {
             event->ignore();
@@ -162,34 +162,6 @@ void MapView::wheelEvent(QWheelEvent *event) {
     if (!angle.isNull()) {
         enlarge(angle.y() > 0, event->position());
     }
-}
-
-void MapView::inputInfo(QPointF pos) {
-    auto editor = new SpotEditor;
-    editor->setFixedSize(150, 50);
-    auto proxy = scene()->addWidget(editor);
-    proxy->setPos(pos + QPoint(15, 15));
-    proxy->setZValue(10);
-    proxy->setFlag(QGraphicsItem::ItemIgnoresTransformations); // 不随 view 缩放
-    editor->focusName();
-
-    connect(editor, &SpotEditor::inputEnd, [=, this](bool focusOut) {
-        QString name = editor->name();
-        QString description = editor->description();
-
-        scene()->removeItem(proxy); // 会触发 SpotEditor 失焦事件
-
-        if (focusOut) {
-            proxy->deleteLater();
-            editor->deleteLater();
-
-            if (!name.isEmpty() || !description.isEmpty()) {
-                auto spot = new Spot(pos.x(), pos.y(), name, description);
-                m_map->addNode(spot);
-                scene()->addItem(spot);
-            }
-        }
-    });
 }
 
 void MapView::changeMode(Mode newMode) {

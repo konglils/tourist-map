@@ -22,19 +22,15 @@ SpotEditor::SpotEditor(QWidget *parent)
     m_name->installEventFilter(this);
     m_description->installEventFilter(this);
 
-    connect(m_name,
-            &QLineEdit::returnPressed,
-            this,
-            [this]() {
-                emit inputEnd(false);
-            });
+    // 按下回车也结束输入
 
-    connect(m_description,
-            &QLineEdit::returnPressed,
-            this,
-            [this]() {
-                emit inputEnd(false);
-            });
+    connect(m_name, &QLineEdit::returnPressed, [this]() {
+        emit inputEnd();
+    });
+
+    connect(m_description, &QLineEdit::returnPressed, [this]() {
+        emit inputEnd();
+    });
 }
 
 void SpotEditor::mousePressEvent(QMouseEvent *event) {
@@ -46,7 +42,12 @@ bool SpotEditor::eventFilter(QObject *watched, QEvent *event) {
     bool focusOut = event->type() == QEvent::FocusOut;
     bool noFocus = !hasFocus() && !m_name->hasFocus() && !m_description->hasFocus();
     if (inWidget && focusOut && noFocus) {
-        emit inputEnd(true);
+        emit inputEnd();
     }
     return QWidget::eventFilter(watched, event);
+}
+
+void SpotEditor::clear() {
+    m_name->clear();
+    m_description->clear();
 }

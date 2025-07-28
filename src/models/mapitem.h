@@ -10,9 +10,9 @@ class MapItem : public QGraphicsItem
 protected:
     MapItem(QGraphicsItem *parent = nullptr);
 
-    MapScene *mapScene();
+    MapScene *mapScene() { return static_cast<MapScene *>(scene()); }
 
-    TouristMap *map();
+    TouristMap *map() { return mapScene()->map(); }
 };
 
 #endif // MAPITEM_H

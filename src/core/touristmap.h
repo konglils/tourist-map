@@ -58,7 +58,7 @@ class TouristMap
 {
 public:
     TouristMap();
-    QGraphicsScene *scene() { return m_scene; }
+    MapScene *scene() { return m_scene; }
     bool openFile(const QString &fileName); // 打开文件
     bool saveFile(const QString &fileName); // 保存文件
     bool save(); // 保存

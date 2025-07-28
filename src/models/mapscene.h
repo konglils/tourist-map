@@ -2,6 +2,7 @@
 #define MAPSCENE_H
 
 #include "infotip.h"
+#include "spoteditor.h"
 
 #include <QGraphicsScene>
 
@@ -12,13 +13,19 @@ class MapScene : public QGraphicsScene
 public:
     explicit MapScene(TouristMap *map, QObject *parent = nullptr);
 
-    InfoTip *infoTip() { return m_infoTip; }
-
     TouristMap *map() { return m_map; }
 
+    InfoTip *infoTip() { return m_infoTip; }
+
+    void showSpotEditor(QPointF pos);
+
 private:
-    InfoTip *m_infoTip = nullptr; // 信息展示框
     TouristMap *m_map;
+
+    InfoTip *m_infoTip; // 信息展示框
+
+    SpotEditor *m_spotEditor;
+    QGraphicsProxyWidget *m_editorProxy;
 };
 
 #endif // MAPSCENE_H
