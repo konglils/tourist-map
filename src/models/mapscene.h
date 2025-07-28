@@ -2,27 +2,23 @@
 #define MAPSCENE_H
 
 #include "infotip.h"
-#include "road.h"
 
 #include <QGraphicsScene>
+
+class TouristMap;
 
 class MapScene : public QGraphicsScene
 {
 public:
-    explicit MapScene(QObject *parent = nullptr);
-
-    double scale() { return m_scale; }
-    void setScale(double scale) { m_scale = scale; }
-
-    Road *buildingRoad() { return m_buildingRoad; }
-    void setBuildingRoad(Road *road) { m_buildingRoad = road; }
+    explicit MapScene(TouristMap *map, QObject *parent = nullptr);
 
     InfoTip *infoTip() { return m_infoTip; }
 
+    TouristMap *map() { return m_map; }
+
 private:
-    double m_scale;
-    Road *m_buildingRoad = nullptr; // 正在构建的 road
     InfoTip *m_infoTip = nullptr; // 信息展示框
+    TouristMap *m_map;
 };
 
 #endif // MAPSCENE_H

@@ -17,7 +17,11 @@ public:
     void enlarge(bool flag); // 放大或缩小
     void setTitle(const QString &name); // 设置窗口标题
     void createMap(const QString &imageFileName, const QString &mapName, double mapScale); // 创建新地图
-    void setNewMap(std::unique_ptr<TouristMap> map); // 设置显示哪个地图
+    void setNewMap(TouristMap *map); // 设置显示哪个地图
+    // TouristMap *map() { return m_map; }
+    Mode mode() { return m_map->mode(); }
+    void setMode(Mode mode) { m_map->setMode(mode); }
+    void changeMode(Mode mode);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override; // 重写鼠标按下事件
@@ -30,6 +34,7 @@ private:
     bool m_dragging = false; // 鼠标是否正在拖拽
     QPointF m_mousePos; // 鼠标位置，用于编写拖拽逻辑
     SpotEditor *m_spotEditor;
+    TouristMap *m_map = nullptr;
 
     void enlarge(bool flag, QPointF mousePos); // 指定位置处缩放
     void inputInfo(QPointF point); // 在指定位置创建输入框输入信息

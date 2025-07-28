@@ -1,6 +1,6 @@
 #include "road.h"
 
-#include "global.h"
+#include "touristmap.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -8,7 +8,7 @@
 #include <QToolTip>
 
 Road::Road(double x, double y, QGraphicsItem *parent)
-    : QGraphicsItem(parent)
+    : MapItem(parent)
 {
     setAcceptHoverEvents(true);
     setZValue(1);
@@ -44,24 +44,21 @@ void Road::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Road::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        g_map->pressRoad(this);
+        map()->pressRoad(this);
     }
 }
 
 void Road::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
-    auto mapScene = static_cast<MapScene *>(scene());
-    auto text = QString("%1 m").arg((int)round(m_distance * mapScene->scale()));
-    mapScene->infoTip()->showingText(text);
+    auto text = QString("%1 m").arg((int)round(m_distance * map()->scale()));
+    mapScene()->infoTip()->showingText(text);
 }
 
 void Road::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
-    auto mapScene = static_cast<MapScene *>(scene());
-    mapScene->infoTip()->showAt(mapToScene(event->pos()));
+    mapScene()->infoTip()->showAt(mapToScene(event->pos()));
 }
 
 void Road::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    auto mapScene = static_cast<MapScene *>(scene());
-    mapScene->infoTip()->hide();
+    mapScene()->infoTip()->hide();
 }
 
 void Road::setChecked(bool checked) {

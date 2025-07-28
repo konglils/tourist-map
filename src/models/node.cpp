@@ -1,13 +1,13 @@
 #include "node.h"
 
-#include "global.h"
+#include "touristmap.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
 Node::Node(double x, double y, QGraphicsItem *parent)
-    : QGraphicsItem(parent)
+    : MapItem(parent)
     , m_x(x)
     , m_y(y)
 {
@@ -35,7 +35,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        g_map->pressNode(this);
+        map()->pressNode(this);
     }
 }
 

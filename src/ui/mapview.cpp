@@ -3,7 +3,6 @@
 #include "node.h"
 #include "spot.h"
 #include "road.h"
-#include "global.h"
 #include "spoteditor.h"
 #include "touristmap.h"
 
@@ -34,32 +33,33 @@ void MapView::open() {
     openFile("/home/cyber/Desktop/ecjtu.map");
 }
 
-void MapView::setNewMap(std::unique_ptr<TouristMap> map) {
-    g_map = std::move(map);
+void MapView::setNewMap(TouristMap *map) {
+    delete m_map;
+    m_map = map;
     auto oldScene = scene();
     if (oldScene) {
         oldScene->clear();
         oldScene->deleteLater();
     }
-    setScene(g_map->scene());
-    setTitle(g_map->name());
+    setScene(m_map->scene());
+    setTitle(m_map->name());
     setEnabled(true); // 设置 MapView 可操作
     resetTransform(); // 重置平移缩放
 }
 
 void MapView::openFile(const QString &fileName) {
-    auto map = std::make_unique<TouristMap>();
+    auto map = new TouristMap;
     bool success = map->openFile(fileName);
     if (success) {
-        setNewMap(std::move(map));
+        setNewMap(map);
     } else {
         QMessageBox::critical(this, "错误", "地图打开失败");
     }
 }
 
 void MapView::save() {
-    if (g_map) {
-        bool success = g_map->save();
+    if (m_map) {
+        bool success = m_map->save();
         if (!success) {
             QMessageBox::critical(this, "错误", "保存失败");
         }
@@ -67,12 +67,12 @@ void MapView::save() {
 }
 
 void MapView::createMap(const QString &imageFileName, const QString &mapName, double mapScale) {
-    auto map = std::make_unique<TouristMap>();
+    auto map = new TouristMap;
     bool success = map->setImage(imageFileName);
     if (success) {
         map->setName(mapName);
         map->setScale(mapScale);
-        setNewMap(std::move(map));
+        setNewMap(map);
     } else {
         QMessageBox::critical(this, "错误", "图片读取失败");
     }
@@ -81,21 +81,20 @@ void MapView::createMap(const QString &imageFileName, const QString &mapName, do
 void MapView::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         auto [x, y] = mapToScene(event->pos());
-        if (g_map->mode() == NodeMode) {
+        if (m_map->mode() == NodeMode) {
             auto node = new Node(x, y);
-            g_map->addNode(node);
+            m_map->addNode(node);
             scene()->addItem(node);
-        } else if (g_map->mode() == SpotMode) {
+        } else if (m_map->mode() == SpotMode) {
             event->ignore();
             QGraphicsView::mousePressEvent(event);
             if (!event->isAccepted()) {
                 inputInfo(mapToScene(event->pos()));
             }
-        } else if (g_map->mode() == RoadMode) {
+        } else if (m_map->mode() == RoadMode) {
             event->ignore();
             QGraphicsView::mousePressEvent(event); // 事件进入 Node，则 accept；进入 Road，则 ignore
-            auto mapScene = static_cast<MapScene *>(scene());
-            auto buildingRoad = mapScene->buildingRoad();
+            auto buildingRoad = m_map->buildingRoad();
             if (!event->isAccepted() && buildingRoad) {
                 buildingRoad->lineTo(x, y);
                 buildingRoad->render();
@@ -186,9 +185,16 @@ void MapView::inputInfo(QPointF pos) {
 
             if (!name.isEmpty() || !description.isEmpty()) {
                 auto spot = new Spot(pos.x(), pos.y(), name, description);
-                g_map->addNode(spot);
+                m_map->addNode(spot);
                 scene()->addItem(spot);
             }
         }
     });
+}
+
+void MapView::changeMode(Mode newMode) {
+    if (mode() == SelectMode && m_map) {
+        m_map->clear();
+    }
+    setMode(newMode);
 }

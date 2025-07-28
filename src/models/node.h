@@ -1,9 +1,11 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <QGraphicsItem>
+#include "mapitem.h"
 
-class Node : public QGraphicsItem
+class TouristMap;
+
+class Node : public MapItem
 {
 public:
     Node(double x, double y, QGraphicsItem *parent = nullptr); // 提供坐标来初始化

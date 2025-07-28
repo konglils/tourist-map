@@ -39,11 +39,12 @@
  *    变长 坐标 途经点
  */
 
-#include "mapscene.h"
 #include "road.h"
 
 #include <QGraphicsScene>
 #include <QString>
+
+class MapScene;
 
 enum Mode {
     SelectMode,
@@ -52,8 +53,6 @@ enum Mode {
     RoadMode,
     DelMode,
 };
-
-class MapView;
 
 class TouristMap
 {
@@ -66,7 +65,8 @@ public:
     QString name() const { return m_name; }
     bool setImage(const QString &imageFileName); // 设置参考图
     void setName(const QString &name) { m_name = name;}
-    void setScale(double scale) { m_scene->setScale(scale); }
+    double scale() { return m_scale; }
+    void setScale(double scale) { m_scale = scale; }
     void clear(); // 清除地图选中状态
     void addNode(Node *node); // 添加结点
     void addRoad(Road *road); // 添加道路
@@ -76,6 +76,7 @@ public:
     void pressRoad(Road *road);
     Mode mode() { return m_mode; }
     void setMode(Mode mode) { m_mode = mode; }
+    Road *buildingRoad() { return m_buildingRoad; }
 
 private:
     QString m_fileName; // 文件名
@@ -89,6 +90,8 @@ private:
     std::vector<std::pair<Node *, Road *>> m_shortestPath; // 最短路径
     std::vector<Node *> m_nodes; // 用于确定 node 对应的索引
     Mode m_mode; // 模式
+    Road *m_buildingRoad = nullptr; // 正在构建的 road
+    double m_scale;
 
     bool loadImage(); // 加载图片到 scene
     bool readImage(QDataStream &in); // 读取图片

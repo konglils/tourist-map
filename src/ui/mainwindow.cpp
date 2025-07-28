@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 
-#include "global.h"
 #include "newmapwindow.h"
 
 #include <QFileDialog>
@@ -87,7 +86,7 @@ void MainWindow::setupActions() {
     auto toggle = [this](QAction *action) {
         if (action == m_currentToggled) {
             action->setChecked(false);
-            g_map->setMode(SelectMode);
+            m_view->setMode(SelectMode);
             m_currentToggled = nullptr;
         } else {
             if (m_currentToggled) {
@@ -106,11 +105,8 @@ void MainWindow::setupActions() {
     };
 
     for (auto [action, mode] : actionModes) {
-        connect(action, &QAction::triggered, [=]() {
-            if (g_map->mode() == SelectMode && g_map) {
-                g_map->clear();
-            }
-            g_map->setMode(mode);
+        connect(action, &QAction::triggered, [=, this]() {
+            m_view->changeMode(mode);
             toggle(action);
         });
     }

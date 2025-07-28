@@ -1,6 +1,5 @@
 #include "touristmap.h"
 
-#include "global.h"
 #include "node.h"
 #include "spot.h"
 #include "road.h"
@@ -13,7 +12,7 @@
 #include <QStringDecoder>
 
 TouristMap::TouristMap()
-    : m_scene(new MapScene)
+    : m_scene(new MapScene{this})
 {}
 
 bool TouristMap::loadImage() {
@@ -74,19 +73,17 @@ void TouristMap::pressNode(Node *node) {
 
     case RoadMode: {
         // 路只能以节点开始和结束
-        auto buildingRoad = m_scene->buildingRoad();
-        if (buildingRoad) {
-            buildingRoad->lineTo(node->x(), node->y());
-            buildingRoad->render();
-            buildingRoad->update();
-            buildingRoad->setNode2(node);
-            g_map->addRoad(buildingRoad);
-            m_scene->setBuildingRoad(nullptr);
+        if (m_buildingRoad) {
+            m_buildingRoad->lineTo(node->x(), node->y());
+            m_buildingRoad->render();
+            m_buildingRoad->update();
+            m_buildingRoad->setNode2(node);
+            addRoad(m_buildingRoad);
+            m_buildingRoad = nullptr;
         } else {
-            buildingRoad = new Road(node->x(), node->y());
-            m_scene->setBuildingRoad(buildingRoad);
-            buildingRoad->setNode1(node);
-            scene()->addItem(buildingRoad);
+            m_buildingRoad = new Road(node->x(), node->y());
+            m_buildingRoad->setNode1(node);
+            m_scene->addItem(m_buildingRoad);
         }
         break;
     }
@@ -429,10 +426,10 @@ bool TouristMap::saveFile(const QString &fileName) {
 
     quint64 pictureSize = m_image.size();
     auto [numNode, numSpot, numRoad] = reCalItems();
-    qDebug() << "Item Count: Node =" << numNode << "|" << "Spot =" << numSpot << "|" << "Road =" << numRoad;
+    qInfo() << "Item Count: Node =" << numNode << "|" << "Spot =" << numSpot << "|" << "Road =" << numRoad;
 
     writeFormatInfo(out);
-    out << pictureSize << m_scene->scale() << numNode << numSpot << numRoad;
+    out << pictureSize << m_scale << numNode << numSpot << numRoad;
     if (out.status() != QDataStream::Ok) {
         return false;
     }

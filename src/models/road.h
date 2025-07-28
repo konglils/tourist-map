@@ -1,13 +1,13 @@
 #ifndef ROAD_H
 #define ROAD_H
 
+#include "mapitem.h"
 #include "node.h"
 
-#include <QGraphicsItem>
 #include <QGraphicsProxyWidget>
 #include <QLabel>
 
-class Road : public QGraphicsItem
+class Road : public MapItem
 {
 public:
     Road(double x, double y, QGraphicsItem *parent = nullptr);

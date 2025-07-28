@@ -14,18 +14,15 @@ Spot::Spot(double x, double y, const QString &name, const QString &description, 
 
 void Spot::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     auto text = QString("%1<br><br>%2").arg(m_name, m_description);
-    auto mapScene = static_cast<MapScene *>(scene());
-    mapScene->infoTip()->showingText(text);
+    mapScene()->infoTip()->showingText(text);
 }
 
 void Spot::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
-    auto mapScene = static_cast<MapScene *>(scene());
-    mapScene->infoTip()->showAt(event->pos());
+    mapScene()->infoTip()->showAt(event->pos());
 }
 
 void Spot::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    auto mapScene = static_cast<MapScene *>(scene());
-    mapScene->infoTip()->hide();
+    mapScene()->infoTip()->hide();
 }
 
 void Spot::setChecked(bool checked) {
