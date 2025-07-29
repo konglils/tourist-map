@@ -33,7 +33,6 @@ MapScene::MapScene(TouristMap *map, QObject *parent)
 
             auto spot = new Spot(x, y, name, description);
             m_map->addNode(spot);
-            addItem(spot);
         }
     });
 }

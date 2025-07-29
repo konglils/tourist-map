@@ -3,7 +3,6 @@
 #include "mapscene.h"
 #include "mode.h"
 #include "node.h"
-#include "road.h"
 #include "spoteditor.h"
 #include "touristmap.h"
 
@@ -82,37 +81,28 @@ void MapView::setMode(Mode newMode) {
 }
 
 void MapView::mousePressEvent(QMouseEvent *event) {
-    if (event->button() == Qt::LeftButton) {
-        auto [x, y] = mapToScene(event->pos());
-        if (m_map->mode() == NodeMode) {
-            auto node = new Node(x, y);
-            m_map->addNode(node);
-            scene()->addItem(node);
-        } else if (m_map->mode() == SpotMode) {
-            event->ignore();
-            QGraphicsView::mousePressEvent(event);
-            if (!event->isAccepted()) {
-                m_map->scene()->showSpotEditor(mapToScene(event->pos()));
-            }
-        } else if (m_map->mode() == RoadMode) {
-            event->ignore();
-            QGraphicsView::mousePressEvent(event); // 事件进入 Node，则 accept；进入 Road，则 ignore
-            auto buildingRoad = m_map->buildingRoad();
-            if (!event->isAccepted() && buildingRoad) {
-                buildingRoad->lineTo(x, y);
-                buildingRoad->render();
-                buildingRoad->update();
-            }
-        } else {
-            QGraphicsView::mousePressEvent(event);
+    switch (event->button()) {
+    case Qt::LeftButton:
+        // 事件往下传递时会自动接受，所以先把事件设置为不接受
+        // 父类方法返回后检测事件是否被接受，就可以知道事件有没有传给某个元素
+        event->setAccepted(false);
+        QGraphicsView::mousePressEvent(event);
+        // 如果没点击元素
+        if (!event->isAccepted()) {
+            m_map->clickBackground(mapToScene(event->pos()));
         }
-    } else if (event->button() == Qt::RightButton) {
-        // 右键拖动
+        break;
+
+    case Qt::RightButton:
+        // 右键按下表示开始拖动地图
         m_dragging = true;
         m_mousePos = event->pos();
         setCursor(Qt::ClosedHandCursor);
-    } else {
+        break;
+
+    default:
         QGraphicsView::mousePressEvent(event);
+        break;
     }
 }
 

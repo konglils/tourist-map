@@ -3,6 +3,7 @@
 
 #include "mode.h"
 
+#include <QPointF>
 #include <QString>
 
 class MapScene;
@@ -88,6 +89,29 @@ public:
     bool save();
 
     /**
+     * @brief 点击节点
+     * @param node 节点
+     */
+    void clickNode(Node *node);
+
+    /**
+     * @brief 点击道路
+     * @param road 道路
+     */
+    void clickRoad(Road *road);
+
+    /**
+     * @brief 点击了背景
+     * @param pos 点击的场景坐标
+     */
+    void clickBackground(QPointF pos);
+
+    /**
+     * @brief 清除地图选中状态
+     */
+    void clear();
+
+    /**
      * @brief 向当前地图添加节点
      * @param node 节点
      */
@@ -110,23 +134,6 @@ public:
      * @param road 道路
      */
     void delRoad(Road *road);
-
-    /**
-     * @brief 点击节点
-     * @param node 节点
-     */
-    void clickNode(Node *node);
-
-    /**
-     * @brief 点击道路
-     * @param road 道路
-     */
-    void clickRoad(Road *road);
-
-    /**
-     * @brief 清除地图选中状态
-     */
-    void clear();
 
     /**
      * @brief 为当前地图设置参考图
