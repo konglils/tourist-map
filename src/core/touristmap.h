@@ -112,28 +112,14 @@ public:
     void clear();
 
     /**
-     * @brief 向当前地图添加节点
-     * @param node 节点
+     * @brief 向当前地图添加地点
+     * @param x 横坐标
+     * @param y 纵座标
+     * @param name 地点名称
+     * @param description 地点描述
      */
-    void addNode(Node *node);
-
-    /**
-     * @brief 向当前地图添加道路
-     * @param road 道路
-     */
-    void addRoad(Road *road);
-
-    /**
-     * @brief 从当前地图删除节点
-     * @param node 节点
-     */
-    void delNode(Node *node);
-
-    /**
-     * @brief 从当前地图删除道路
-     * @param road 道路
-     */
-    void delRoad(Road *road);
+    void addSpot(double x, double y,
+                 const QString &name, const QString &description);
 
     /**
      * @brief 为当前地图设置参考图
@@ -153,18 +139,23 @@ public:
     void setScale(double scale) { m_scale = scale; }
     double scale() const { return m_scale; }
 
-    Road *buildingRoad() const { return m_buildingRoad; }
-
 private:
     bool readImage(QDataStream &in);
     bool loadImage();
     bool readNode(QDataStream &in, quint64 startIndex, quint64 numNode);
     bool readSpot(QDataStream &in, quint64 startIndex, quint64 numSpot);
     bool readRoad(QDataStream &in, quint64 numRoad);
+
     bool writeImage(QDataStream &out);
     bool writeNode(QDataStream &out, quint64 startIndex, quint64 numNode);
     bool writeSpot(QDataStream &out, quint64 startIndex, quint64 numSpot);
     bool writeRoad(QDataStream &out);
+
+    void addNode(Node *node);
+    void addRoad(Road *road);
+
+    void delNode(Node *node);
+    void delRoad(Road *road);
 
     /// 重新计算图中元素数量并更新节点的索引
     std::tuple<quint64, quint64, quint64> reCalItems();

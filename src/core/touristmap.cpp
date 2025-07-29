@@ -300,44 +300,10 @@ void TouristMap::clear() {
     }
 }
 
-void TouristMap::addNode(Node *node) {
-    m_scene->addItem(node);
-    quint64 index = m_graph.size();
-    node->setIndex(index);
-    m_graph.emplace_back();
-    m_shortestDistance.emplace_back();
-    m_shortestPath.emplace_back();
-}
-
-void TouristMap::addRoad(Road *road) {
-    Node *node1 = road->node1();
-    Node *node2 = road->node2();
-    m_graph[node1->index()].emplace_back(node2, road);
-    m_graph[node2->index()].emplace_back(node1, road);
-}
-
-void TouristMap::delNode(Node *node) {
-    auto nextSides = m_graph[node->index()]; // delRoad 会修改 m_graph
-    for (auto [nextNode, road] : nextSides) {
-        delRoad(road);
-    }
-    m_scene->removeItem(node);
-    delete node;
-}
-
-void TouristMap::delRoad(Road *road) {
-    // 稀疏图，O(1) 时间复杂度
-    Node *node1 = road->node1();
-    Node *node2 = road->node2();
-    if (node1) {
-        std::erase(m_graph[node1->index()], std::make_pair(node2, road));
-    }
-    if (node2) {
-        std::erase(m_graph[node2->index()], std::make_pair(node1, road));
-    }
-    m_scene->removeItem(road);
-    m_scene->infoTip()->hide();
-    delete road;
+void TouristMap::addSpot(double x, double y,
+             const QString &name, const QString &description) {
+    auto spot = new Spot(x, y, name, description);
+    addNode(spot);
 }
 
 bool TouristMap::setImage(const QString &imageFilePath) {
@@ -487,6 +453,46 @@ bool TouristMap::writeRoad(QDataStream &out) {
     }
 
     return true;
+}
+
+void TouristMap::addNode(Node *node) {
+    m_scene->addItem(node);
+    quint64 index = m_graph.size();
+    node->setIndex(index);
+    m_graph.emplace_back();
+    m_shortestDistance.emplace_back();
+    m_shortestPath.emplace_back();
+}
+
+void TouristMap::addRoad(Road *road) {
+    Node *node1 = road->node1();
+    Node *node2 = road->node2();
+    m_graph[node1->index()].emplace_back(node2, road);
+    m_graph[node2->index()].emplace_back(node1, road);
+}
+
+void TouristMap::delNode(Node *node) {
+    auto nextSides = m_graph[node->index()]; // delRoad 会修改 m_graph
+    for (auto [nextNode, road] : nextSides) {
+        delRoad(road);
+    }
+    m_scene->removeItem(node);
+    delete node;
+}
+
+void TouristMap::delRoad(Road *road) {
+    // 稀疏图，O(1) 时间复杂度
+    Node *node1 = road->node1();
+    Node *node2 = road->node2();
+    if (node1) {
+        std::erase(m_graph[node1->index()], std::make_pair(node2, road));
+    }
+    if (node2) {
+        std::erase(m_graph[node2->index()], std::make_pair(node1, road));
+    }
+    m_scene->removeItem(road);
+    m_scene->infoTip()->hide();
+    delete road;
 }
 
 std::tuple<quint64, quint64, quint64> TouristMap::reCalItems() {

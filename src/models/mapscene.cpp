@@ -1,7 +1,6 @@
 #include "mapscene.h"
 
 #include "infotip.h"
-#include "spot.h"
 #include "spoteditor.h"
 #include "touristmap.h"
 
@@ -30,9 +29,7 @@ MapScene::MapScene(TouristMap *map, QObject *parent)
 
         if (!name.isEmpty() || !description.isEmpty()) {
             auto [x, y] = m_editorProxy->pos() - QPoint(15, 15);
-
-            auto spot = new Spot(x, y, name, description);
-            m_map->addNode(spot);
+            m_map->addSpot(x, y, name, description);
         }
     });
 }
