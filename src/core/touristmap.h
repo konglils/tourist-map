@@ -65,6 +65,8 @@ class TouristMap
 public:
     TouristMap();
 
+    ~TouristMap();
+
     /**
      * @brief 打开地图文件，将二进制数据转换为图形
      * @param filePath 文件路径

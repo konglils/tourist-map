@@ -24,12 +24,6 @@ public:
     explicit MapView(QWidget *parent = nullptr);
 
     /**
-     * @brief 显示指定地图
-     * @param map 地图
-     */
-    void showMap(TouristMap *map);
-
-    /**
      * @brief 在视口中心缩放
      * @param zoomIn 是否放大
      */
@@ -70,6 +64,8 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
+    void showMap(TouristMap *map);
+
     /// 在视口指定位置缩放
     void zoom(bool zoomIn, QPointF pos);
 
@@ -81,7 +77,6 @@ private:
     QPointF m_mousePos;
 
     TouristMap *m_map = nullptr;
-    MapScene *m_scene = nullptr;
 };
 
 #endif // MAPVIEW_H

@@ -25,6 +25,10 @@ TouristMap::TouristMap()
     : m_scene(new MapScene{this})
 {}
 
+TouristMap::~TouristMap() {
+    m_scene->deleteLater();
+}
+
 bool TouristMap::loadImage() {
     QImage image = QImage::fromData(m_image);
     QPixmap pixmap = QPixmap::fromImage(image);

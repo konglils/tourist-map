@@ -24,21 +24,6 @@ MapView::MapView(QWidget *parent)
     setTransformationAnchor(QGraphicsView::NoAnchor);
 }
 
-void MapView::showMap(TouristMap *map) {
-    delete m_map;
-    m_map = map;
-    auto oldScene = scene();
-    if (oldScene) {
-        oldScene->clear();
-        oldScene->deleteLater();
-    }
-    setScene(m_map->scene());
-    m_scene = m_map->scene();
-    setTitle(m_map->title());
-    setEnabled(true); // 设置 MapView 可操作
-    resetTransform(); // 重置平移缩放
-}
-
 void MapView::zoom(bool zoomIn) {
     zoom(zoomIn, viewport()->rect().center());
 }
@@ -49,8 +34,8 @@ void MapView::open() {
 
 void MapView::openFile(const QString &filePath) {
     auto map = new TouristMap;
-    bool success = map->openFile(filePath);
-    if (success) {
+    bool ok = map->openFile(filePath);
+    if (ok) {
         showMap(map);
     } else {
         QMessageBox::critical(this, "错误", "地图打开失败");
@@ -59,8 +44,8 @@ void MapView::openFile(const QString &filePath) {
 
 void MapView::save() {
     if (m_map) {
-        bool success = m_map->save();
-        if (!success) {
+        bool ok = m_map->save();
+        if (!ok) {
             QMessageBox::critical(this, "错误", "保存失败");
         }
     }
@@ -70,8 +55,8 @@ void MapView::createMap(const QString &imageFilePath,
                         const QString &mapTitle,
                         double mapScale) {
     auto map = new TouristMap;
-    bool success = map->setImage(imageFilePath);
-    if (success) {
+    bool ok = map->setImage(imageFilePath);
+    if (ok) {
         map->setTitle(mapTitle);
         map->setScale(mapScale);
         showMap(map);
@@ -81,17 +66,19 @@ void MapView::createMap(const QString &imageFilePath,
 }
 
 void MapView::setMode(Mode newMode) {
-    switch (m_map->mode()) {
-    case SelectMode:
-        m_map->clear();
-        break;
-    case SpotMode:
-        m_scene->hideSpotEditor();
-        break;
-    default:
-        break;
+    if (m_map) {
+        switch (m_map->mode()) {
+        case SelectMode:
+            m_map->clear();
+            break;
+        case SpotMode:
+            m_map->scene()->hideSpotEditor();
+            break;
+        default:
+            break;
+        }
+        m_map->setMode(newMode);
     }
-    m_map->setMode(newMode);
 }
 
 void MapView::mousePressEvent(QMouseEvent *event) {
@@ -105,7 +92,7 @@ void MapView::mousePressEvent(QMouseEvent *event) {
             event->ignore();
             QGraphicsView::mousePressEvent(event);
             if (!event->isAccepted()) {
-                m_scene->showSpotEditor(mapToScene(event->pos()));
+                m_map->scene()->showSpotEditor(mapToScene(event->pos()));
             }
         } else if (m_map->mode() == RoadMode) {
             event->ignore();
@@ -155,6 +142,14 @@ void MapView::wheelEvent(QWheelEvent *event) {
     if (!angle.isNull()) {
         zoom(angle.y() > 0, event->position());
     }
+}
+
+void MapView::showMap(TouristMap *map) {
+    delete m_map;
+    m_map = map;
+    setScene(m_map->scene());
+    setTitle(m_map->title());
+    setEnabled(true); // 设置 MapView 可操作
 }
 
 void MapView::zoom(bool flag, QPointF mousePos) {
