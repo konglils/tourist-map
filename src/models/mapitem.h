@@ -3,15 +3,12 @@
 
 #include <QGraphicsItem>
 
-class MapScene;
 class TouristMap;
 
 class MapItem : public QGraphicsItem
 {
 protected:
     MapItem(QGraphicsItem *parent = nullptr);
-
-    MapScene *mapScene();
 
     TouristMap *map();
 };

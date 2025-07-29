@@ -1,10 +1,10 @@
 #include "touristmap.h"
 
 #include "infotip.h"
-#include "mapscene.h"
 #include "node.h"
 #include "road.h"
 #include "spot.h"
+#include "spoteditor.h"
 
 #include <QByteArray>
 #include <QDataStream>
@@ -14,6 +14,7 @@
 #include <QImage>
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
+#include <QGraphicsProxyWidget>
 #include <QPixmap>
 #include <QString>
 #include <QStringDecoder>
@@ -21,12 +22,37 @@
 
 #include <queue>
 
-TouristMap::TouristMap()
-    : m_scene(new MapScene{this})
-{}
+TouristMap::TouristMap(QObject *parent)
+    : QGraphicsScene{parent}
+    , m_infoTip{new InfoTip}
+    , m_spotEditor{new SpotEditor}
+{
+    addItem(m_infoTip);
+
+    m_spotEditor->setFixedSize(150, 50);
+    m_editorProxy = addWidget(m_spotEditor);
+    m_editorProxy->setZValue(10);
+    // 不随 view 缩放
+    m_editorProxy->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    m_editorProxy->hide();
+
+    connect(m_spotEditor, &SpotEditor::inputEnd, [this]() {
+        QString name = m_spotEditor->name();
+        QString description = m_spotEditor->description();
+
+        m_spotEditor->clear();
+        m_editorProxy->hide();
+
+        if (!name.isEmpty() || !description.isEmpty()) {
+            auto [x, y] = m_editorProxy->pos() - QPoint(15, 15);
+            auto spot = new Spot(x, y, name, description);
+            addNode(spot);
+        }
+    });
+}
 
 TouristMap::~TouristMap() {
-    m_scene->deleteLater();
+
 }
 
 bool readFormatInfo(QDataStream &in) {
@@ -152,7 +178,7 @@ bool TouristMap::saveFile(const QString &filePath) {
     m_shortestDistance.assign(numAllNode, std::numeric_limits<double>::max());
     m_shortestPath.assign(numAllNode, std::make_pair(nullptr, nullptr));
     fill(m_graph.begin(), m_graph.end(), std::vector<std::pair<Node *, Road *>>{});
-    for (QGraphicsItem *item : m_scene->items()) {
+    for (QGraphicsItem *item : items()) {
         if (auto road = qgraphicsitem_cast<Road *>(item)) {
             addRoad(road);
         }
@@ -230,7 +256,7 @@ void TouristMap::clickNode(Node *node) {
         } else {
             m_buildingRoad = new Road(node->x(), node->y());
             m_buildingRoad->setNode1(node);
-            m_scene->addItem(m_buildingRoad);
+            addItem(m_buildingRoad);
         }
         break;
     }
@@ -270,7 +296,7 @@ void TouristMap::clickBackground(QPointF pos) {
     }
 
     case SpotMode:
-        m_scene->showSpotEditor(pos);
+        showSpotEditor(pos);
         break;
 
     case RoadMode:
@@ -300,12 +326,6 @@ void TouristMap::clear() {
     }
 }
 
-void TouristMap::addSpot(double x, double y,
-             const QString &name, const QString &description) {
-    auto spot = new Spot(x, y, name, description);
-    addNode(spot);
-}
-
 bool TouristMap::setImage(const QString &imageFilePath) {
     QFile file(imageFilePath);
     if (file.open(QIODevice::ReadOnly)) {
@@ -314,6 +334,11 @@ bool TouristMap::setImage(const QString &imageFilePath) {
     } else {
         return false;
     }
+}
+
+void TouristMap::hideSpotEditor() {
+    m_spotEditor->clear();
+    m_editorProxy->hide();
 }
 
 bool TouristMap::readImage(QDataStream &in) {
@@ -330,8 +355,8 @@ bool TouristMap::loadImage() {
     if (pixmap.isNull()) {
         return false;
     }
-    m_scene->setSceneRect(image.rect());
-    auto imageItem = m_scene->addPixmap(pixmap);
+    setSceneRect(image.rect());
+    auto imageItem = addPixmap(pixmap);
     imageItem->setTransformationMode(Qt::SmoothTransformation); // 图片平滑插值
     imageItem->setZValue(-1);
 
@@ -348,7 +373,7 @@ bool TouristMap::readNode(QDataStream &in, quint64 startIndex, quint64 numNode) 
         auto node = new Node(x, y);
         node->setIndex(i);
         m_nodes[i] = node;
-        m_scene->addItem(node);
+        addItem(node);
     }
 
     return true;
@@ -365,7 +390,7 @@ bool TouristMap::readSpot(QDataStream &in, quint64 startIndex, quint64 numSpot) 
         auto spot = new Spot(x, y, name, description);
         spot->setIndex(i);
         m_nodes[i] = spot;
-        m_scene->addItem(spot);
+        addItem(spot);
     }
 
     return true;
@@ -398,7 +423,7 @@ bool TouristMap::readRoad(QDataStream &in, quint64 numRoad) {
         m_graph[nodeIndex2].emplace_back(node1, road);
 
         road->render();
-        m_scene->addItem(road);
+        addItem(road);
     }
 
     return true;
@@ -436,7 +461,7 @@ bool TouristMap::writeSpot(QDataStream &out, quint64 startIndex, quint64 numSpot
 }
 
 bool TouristMap::writeRoad(QDataStream &out) {
-    for (QGraphicsItem *item : m_scene->items()) {
+    for (QGraphicsItem *item : items()) {
         if (auto road = qgraphicsitem_cast<Road *>(item)) {
             out << road->node1()->index();
             out << road->node2()->index();
@@ -456,7 +481,7 @@ bool TouristMap::writeRoad(QDataStream &out) {
 }
 
 void TouristMap::addNode(Node *node) {
-    m_scene->addItem(node);
+    addItem(node);
     quint64 index = m_graph.size();
     node->setIndex(index);
     m_graph.emplace_back();
@@ -476,7 +501,7 @@ void TouristMap::delNode(Node *node) {
     for (auto [nextNode, road] : nextSides) {
         delRoad(road);
     }
-    m_scene->removeItem(node);
+    removeItem(node);
     delete node;
 }
 
@@ -490,8 +515,8 @@ void TouristMap::delRoad(Road *road) {
     if (node2) {
         std::erase(m_graph[node2->index()], std::make_pair(node1, road));
     }
-    m_scene->removeItem(road);
-    m_scene->infoTip()->hide();
+    removeItem(road);
+    m_infoTip->hide();
     delete road;
 }
 
@@ -499,14 +524,14 @@ std::tuple<quint64, quint64, quint64> TouristMap::reCalItems() {
     // 保证保存时 Node 都在 Spot 前面
     quint64 numNode = 0, numSpot = 0, numRoad = 0;
     m_nodes.clear();
-    for (QGraphicsItem *item : m_scene->items()) {
+    for (QGraphicsItem *item : items()) {
         if (auto node = qgraphicsitem_cast<Node *>(item)) {
             numNode += 1;
             node->setIndex(m_nodes.size());
             m_nodes.push_back(node);
         }
     }
-    for (QGraphicsItem *item : m_scene->items()) {
+    for (QGraphicsItem *item : items()) {
         if (auto spot = qgraphicsitem_cast<Spot *>(item)) {
             numSpot += 1;
             spot->setIndex(m_nodes.size());
@@ -556,4 +581,10 @@ void TouristMap::setPathShow(Node *destination, bool show) {
         road->update();
         node = fromNode;
     }
+}
+
+void TouristMap::showSpotEditor(QPointF pos) {
+    m_editorProxy->setPos(pos + QPoint(15, 15));
+    m_editorProxy->show();
+    m_spotEditor->focusName();
 }

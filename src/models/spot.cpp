@@ -1,7 +1,7 @@
 #include "spot.h"
 
 #include "infotip.h"
-#include "mapscene.h"
+#include "touristmap.h"
 
 #include <QGraphicsSceneHoverEvent>
 
@@ -16,15 +16,15 @@ Spot::Spot(double x, double y, const QString &name, const QString &description, 
 
 void Spot::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     auto text = QString("%1<br><br>%2").arg(m_name, m_description);
-    mapScene()->infoTip()->showingText(text);
+    map()->infoTip()->showingText(text);
 }
 
 void Spot::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
-    mapScene()->infoTip()->showAt(event->pos());
+    map()->infoTip()->showAt(event->pos());
 }
 
 void Spot::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    mapScene()->infoTip()->hide();
+    map()->infoTip()->hide();
 }
 
 void Spot::setChecked(bool checked) {

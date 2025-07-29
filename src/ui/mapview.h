@@ -64,6 +64,8 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
+    TouristMap *map() const;
+
     void showMap(TouristMap *map);
 
     /// 在视口指定位置缩放
@@ -75,8 +77,6 @@ private:
 
     bool m_dragging = false; ///< 鼠标是否正在拖拽
     QPointF m_mousePos;
-
-    TouristMap *m_map = nullptr;
 };
 
 #endif // MAPVIEW_H

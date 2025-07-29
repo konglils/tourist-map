@@ -1,7 +1,6 @@
 #include "road.h"
 
 #include "infotip.h"
-#include "mapscene.h"
 #include "touristmap.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -50,15 +49,15 @@ void Road::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
 void Road::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     auto text = QString("%1 m").arg((int)round(m_distance * map()->scale()));
-    mapScene()->infoTip()->showingText(text);
+    map()->infoTip()->showingText(text);
 }
 
 void Road::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
-    mapScene()->infoTip()->showAt(mapToScene(event->pos()));
+    map()->infoTip()->showAt(mapToScene(event->pos()));
 }
 
 void Road::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-    mapScene()->infoTip()->hide();
+    map()->infoTip()->hide();
 }
 
 void Road::setChecked(bool checked) {

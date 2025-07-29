@@ -1,6 +1,5 @@
 #include "mapview.h"
 
-#include "mapscene.h"
 #include "mode.h"
 #include "node.h"
 #include "spoteditor.h"
@@ -42,8 +41,8 @@ void MapView::openFile(const QString &filePath) {
 }
 
 void MapView::save() {
-    if (m_map) {
-        bool ok = m_map->save();
+    if (map()) {
+        bool ok = map()->save();
         if (!ok) {
             QMessageBox::critical(this, "错误", "保存失败");
         }
@@ -65,18 +64,18 @@ void MapView::createMap(const QString &imageFilePath,
 }
 
 void MapView::setMode(Mode newMode) {
-    if (m_map) {
-        switch (m_map->mode()) {
+    if (map()) {
+        switch (map()->mode()) {
         case SelectMode:
-            m_map->clear();
+            map()->clear();
             break;
         case SpotMode:
-            m_map->scene()->hideSpotEditor();
+            map()->hideSpotEditor();
             break;
         default:
             break;
         }
-        m_map->setMode(newMode);
+        map()->setMode(newMode);
     }
 }
 
@@ -89,7 +88,7 @@ void MapView::mousePressEvent(QMouseEvent *event) {
         QGraphicsView::mousePressEvent(event);
         // 如果没点击元素
         if (!event->isAccepted()) {
-            m_map->clickBackground(mapToScene(event->pos()));
+            map()->clickBackground(mapToScene(event->pos()));
         }
         break;
 
@@ -134,12 +133,18 @@ void MapView::wheelEvent(QWheelEvent *event) {
     }
 }
 
-void MapView::showMap(TouristMap *map) {
-    delete m_map;
-    m_map = map;
-    setScene(m_map->scene());
-    setTitle(m_map->title());
-    setEnabled(true); // 设置 MapView 可操作
+TouristMap *MapView::map() const {
+    return static_cast<TouristMap *>(scene());
+}
+
+void MapView::showMap(TouristMap *newMap) {
+    delete map();
+
+    setScene(newMap);
+    setTitle(newMap->title());
+
+    // 设置 MapView 可操作
+    setEnabled(true);
 }
 
 void MapView::zoom(bool flag, QPointF mousePos) {

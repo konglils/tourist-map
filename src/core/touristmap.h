@@ -3,12 +3,16 @@
 
 #include "mode.h"
 
+#include <QGraphicsScene>
 #include <QPointF>
 #include <QString>
 
+class InfoTip;
 class MapScene;
 class Node;
+class QGraphicsProxyWidget;
 class Road;
+class SpotEditor;
 
 /**
  * @brief 打开或保存地图文件；修改地图内容；计算最短路径
@@ -61,10 +65,10 @@ class Road;
  *  8 字节 u64 途经点数
  *    变长 坐标 途经点
  */
-class TouristMap
+class TouristMap : public QGraphicsScene
 {
 public:
-    TouristMap();
+    explicit TouristMap(QObject *parent = nullptr);
 
     ~TouristMap();
 
@@ -112,23 +116,18 @@ public:
     void clear();
 
     /**
-     * @brief 向当前地图添加地点
-     * @param x 横坐标
-     * @param y 纵座标
-     * @param name 地点名称
-     * @param description 地点描述
-     */
-    void addSpot(double x, double y,
-                 const QString &name, const QString &description);
-
-    /**
      * @brief 为当前地图设置参考图
      * @param 图片文件路径
      * @return 是否成功
      */
     bool setImage(const QString &imageFilePath);
 
-    MapScene *scene() const { return m_scene; }
+    /**
+     * @brief 隐藏地点编辑框
+     */
+    void hideSpotEditor();
+
+    InfoTip *infoTip() const { return m_infoTip; }
 
     void setMode(Mode mode) { m_mode = mode; }
     Mode mode() const { return m_mode; }
@@ -161,11 +160,12 @@ private:
     std::tuple<quint64, quint64, quint64> reCalItems();
 
     void calShortestPath(Node *source);
+
     void setPathShow(Node *destination, bool show);
 
-    MapScene *m_scene;
+    void showSpotEditor(QPointF pos);
 
-    Mode m_mode;
+    Mode m_mode = SelectMode;
 
     QString m_title;
     double m_scale;
@@ -184,6 +184,11 @@ private:
     std::vector<std::pair<Node *, Road *>> m_shortestPath;
 
     Road *m_buildingRoad = nullptr;
+
+    InfoTip *m_infoTip;
+
+    SpotEditor *m_spotEditor;
+    QGraphicsProxyWidget *m_editorProxy;
 };
 
 #endif // TOURISTMAP_H
