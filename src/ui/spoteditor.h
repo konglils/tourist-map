@@ -8,28 +8,45 @@ class QEvent;
 class QLineEdit;
 class QMouseEvent;
 
+/**
+ * @brief 地点编辑框
+ */
 class SpotEditor : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit SpotEditor(QWidget *parent = nullptr);
-    QString name() const;
-    QString description() const;
-    void focusName(); // 聚焦在名称输入框
+
+    /**
+     * @brief 聚焦在名称输入框
+     */
+    void focusName();
+
+    /**
+     * @brief 清除已输入的文字
+     */
     void clear();
 
+    QString name() const;
+
+    QString description() const;
+
 signals:
-    // void inputEnd(bool focusOut); // 输入结束信号
+    /**
+     * @brief 输入结束的信号
+     *
+     * 在输入框中按下回车，或焦点离开编辑框都属于输入结束
+     */
     void inputEnd();
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-    QLineEdit *m_name; // 名称输入框
-    QLineEdit *m_description; // 描述输入框
+    QLineEdit *m_name;
+
+    QLineEdit *m_description;
 };
 
 #endif // SPOTEDITOR_H

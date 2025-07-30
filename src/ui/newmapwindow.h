@@ -6,6 +6,9 @@
 
 class QWidget;
 
+/**
+ * @brief 创建新地图的窗口
+ */
 class NewMapWindow : public QDialog
 {
     Q_OBJECT
