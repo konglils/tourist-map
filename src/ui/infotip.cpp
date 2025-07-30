@@ -6,14 +6,19 @@ InfoTip::InfoTip(QGraphicsItem *parent)
     setZValue(20);
 }
 
-void InfoTip::showingText(const QString &text) {
+void InfoTip::showText(const QString &text) {
     auto tip = QString(
-                   "<div style=\"background-color: white; color: black; font-size: 20px\">%1</div>"
-                   ).arg(text);
+        "<div style=\""
+        "background-color: white;"
+        "color: black;"
+        "font-size: 20px\">"
+        "%1"
+        "</div>"
+        ).arg(text);
     setHtml(tip);
     show();
 }
 
-void InfoTip::showAt(const QPointF &pos) {
+void InfoTip::moveTo(const QPointF &pos) {
     setPos(pos + QPoint(15, 15));
 }

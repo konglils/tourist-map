@@ -28,11 +28,11 @@ void Spot::setChecked(bool checked) {
 
 void Spot::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     auto text = QString("%1<br><br>%2").arg(m_name, m_description);
-    map()->infoTip()->showingText(text);
+    map()->infoTip()->showText(text);
 }
 
 void Spot::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
-    map()->infoTip()->showAt(event->pos());
+    map()->infoTip()->moveTo(event->pos());
 }
 
 void Spot::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {

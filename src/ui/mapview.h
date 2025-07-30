@@ -20,6 +20,7 @@ class TouristMap;
 class MapView : public QGraphicsView
 {
     Q_OBJECT
+
 public:
     explicit MapView(QWidget *parent = nullptr);
 

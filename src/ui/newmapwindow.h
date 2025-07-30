@@ -9,6 +9,7 @@ class QWidget;
 class NewMapWindow : public QDialog
 {
     Q_OBJECT
+
 public:
     explicit NewMapWindow(QWidget *parent = nullptr);
     QString getImageFileName() { return m_imageFileName; }

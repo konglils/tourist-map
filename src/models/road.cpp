@@ -79,11 +79,11 @@ void Road::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
 void Road::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     auto text = QString("%1 m").arg((int)round(m_distance * map()->scale()));
-    map()->infoTip()->showingText(text);
+    map()->infoTip()->showText(text);
 }
 
 void Road::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
-    map()->infoTip()->showAt(mapToScene(event->pos()));
+    map()->infoTip()->moveTo(mapToScene(event->pos()));
 }
 
 void Road::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {

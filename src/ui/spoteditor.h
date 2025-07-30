@@ -11,6 +11,7 @@ class QMouseEvent;
 class SpotEditor : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit SpotEditor(QWidget *parent = nullptr);
     QString name() const;
