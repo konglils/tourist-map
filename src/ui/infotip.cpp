@@ -1,7 +1,7 @@
 #include "infotip.h"
 
 InfoTip::InfoTip(QGraphicsItem *parent)
-    : QGraphicsTextItem(parent)
+    : QGraphicsTextItem{parent}
 {
     setZValue(20);
 }

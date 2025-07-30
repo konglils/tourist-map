@@ -11,7 +11,7 @@ class TouristMap;
 class MapItem : public QGraphicsItem
 {
 protected:
-    MapItem(QGraphicsItem *parent = nullptr);
+    explicit MapItem(QGraphicsItem *parent = nullptr);
 
     /// 返回元素所在的地图
     TouristMap *map();

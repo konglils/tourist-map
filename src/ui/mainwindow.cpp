@@ -9,8 +9,8 @@
 #include <QToolBar>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , m_view(new MapView(this))
+    : QMainWindow{parent}
+    , m_view{new MapView{this}}
 {
     setWindowTitle("导游咨询");
     resize(1200, 750);
@@ -71,9 +71,9 @@ void MainWindow::setupActions() {
         bool confirm = window.exec();
         if (confirm) {
             m_view->createMap(
-                window.getImageFileName(),
-                window.getMapTitle(),
-                window.getScale());
+                window.imageFilePath(),
+                window.mapTitle(),
+                window.scale());
         }
     });
 

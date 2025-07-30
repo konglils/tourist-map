@@ -7,7 +7,7 @@
 #include <QPainter>
 
 Road::Road(double startX, double startY, QGraphicsItem *parent)
-    : MapItem(parent)
+    : MapItem{parent}
 {
     setAcceptHoverEvents(true);
     setZValue(1);

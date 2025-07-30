@@ -6,9 +6,9 @@
 #include <QPainter>
 
 Node::Node(double x, double y, QGraphicsItem *parent)
-    : MapItem(parent)
-    , m_x(x)
-    , m_y(y)
+    : MapItem{parent}
+    , m_x{x}
+    , m_y{y}
 {
     setAcceptedMouseButtons(Qt::LeftButton);
     setCacheMode(QGraphicsItem::ItemCoordinateCache);
@@ -16,8 +16,6 @@ Node::Node(double x, double y, QGraphicsItem *parent)
 
     QRectF rect(x-radius, y-radius, radius*2, radius*2);
     m_shape.addEllipse(rect);
-
-    m_color = unCheckedColor;
 }
 
 void Node::setChecked(bool checked) {

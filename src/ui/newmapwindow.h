@@ -12,14 +12,19 @@ class NewMapWindow : public QDialog
 
 public:
     explicit NewMapWindow(QWidget *parent = nullptr);
-    QString getImageFileName() { return m_imageFileName; }
-    QString getMapTitle() { return m_mapTitle; }
-    double getScale() { return m_scale; }
+
+    QString imageFilePath() { return m_imageFilePath; }
+
+    QString mapTitle() { return m_mapTitle; }
+
+    double scale() { return m_scale; }
 
 private:
-    QString m_imageFileName; // 图片文件名
-    QString m_mapTitle; // 地图名称
-    double m_scale; // 地图比例尺
+    QString m_imageFilePath;
+
+    QString m_mapTitle;
+
+    double m_scale;
 };
 
 #endif // NEWMAPWINDOW_H

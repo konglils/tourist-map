@@ -8,9 +8,9 @@
 Spot::Spot(double x, double y,
            const QString &name, const QString &description,
            QGraphicsItem *parent)
-    : Node(x, y, parent)
-    , m_name(name)
-    , m_description(description)
+    : Node{x, y, parent}
+    , m_name{name}
+    , m_description{description}
 {
     setAcceptHoverEvents(true);
 

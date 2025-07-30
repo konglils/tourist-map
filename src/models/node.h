@@ -49,7 +49,7 @@ protected:
 
     bool m_checked = false;
 
-    QColor m_color;
+    QColor m_color = unCheckedColor;
 
 private:
     static constexpr int radius = 10;

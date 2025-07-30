@@ -8,8 +8,8 @@
 
 SpotEditor::SpotEditor(QWidget *parent)
     : QWidget{parent}
-    , m_name(new QLineEdit(this))
-    , m_description(new QLineEdit(this))
+    , m_name{new QLineEdit{this}}
+    , m_description{new QLineEdit{this}}
 {
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

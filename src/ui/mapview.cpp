@@ -11,7 +11,7 @@
 #include <QWheelEvent>
 
 MapView::MapView(QWidget *parent)
-    : QGraphicsView(parent)
+    : QGraphicsView{parent}
 {
     // 开始不可操作，因为没有还没有场景
     setEnabled(false);

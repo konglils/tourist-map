@@ -12,6 +12,7 @@ NewMapWindow::NewMapWindow(QWidget *parent)
     : QDialog{parent}
 {
     setWindowTitle("创建新地图");
+
     auto imageLabel = new QLabel("", this);
     auto imageButton = new QPushButton("选择参考图", this);
     auto nameLabel = new QLabel("名称", this);
@@ -28,7 +29,7 @@ NewMapWindow::NewMapWindow(QWidget *parent)
     buttonBox->setEnabled(false);
 
     auto updateButtonBox = [=, this]() {
-        if (m_imageFileName.isNull() || nameInput->text().isNull()) {
+        if (m_imageFilePath.isNull() || nameInput->text().isNull()) {
             buttonBox->setEnabled(false);
         } else {
             buttonBox->setEnabled(true);
@@ -36,17 +37,17 @@ NewMapWindow::NewMapWindow(QWidget *parent)
     };
 
     connect(imageButton, &QPushButton::clicked, [=, this]() {
-        QString fileName = QFileDialog::getOpenFileName(
+        QString filePath = QFileDialog::getOpenFileName(
             this,
             "选择参考图",
             "",
             "Images (*.png *.jpg *.bmp *.gif)"
             );
-        if (!fileName.isNull()) {
-            m_imageFileName = fileName;
+        if (!filePath.isNull()) {
+            m_imageFilePath = filePath;
         }
         updateButtonBox();
-        imageLabel->setText(m_imageFileName);
+        imageLabel->setText(m_imageFilePath);
     });
 
     connect(nameInput, &QLineEdit::textChanged, updateButtonBox);
