@@ -5,13 +5,25 @@
 
 #include <QGraphicsSceneHoverEvent>
 
-Spot::Spot(double x, double y, const QString &name, const QString &description, QGraphicsItem *parent)
+Spot::Spot(double x, double y,
+           const QString &name, const QString &description,
+           QGraphicsItem *parent)
     : Node(x, y, parent)
     , m_name(name)
     , m_description(description)
 {
     setAcceptHoverEvents(true);
-    m_color = QColor(255, 215, 0);
+
+    m_color = unCheckedColor;
+}
+
+void Spot::setChecked(bool checked) {
+    m_checked = checked;
+    if (checked) {
+        m_color = checkedColor;
+    } else {
+        m_color = unCheckedColor;
+    }
 }
 
 void Spot::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
@@ -25,13 +37,4 @@ void Spot::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
 
 void Spot::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     map()->infoTip()->hide();
-}
-
-void Spot::setChecked(bool checked) {
-    m_checked = checked;
-    if (checked) {
-        m_color = QColor(0, 255, 127);
-    } else {
-        m_color = QColor(255, 215, 0);
-    }
 }

@@ -17,7 +17,7 @@ class SpotEditor;
 /**
  * @brief 打开或保存地图文件；修改地图内容；计算最短路径
  *
- * 一个 TouristMap 对应一个场景（MapScene），读取文件产生的图形保存在场景里，
+ * 一个 TouristMap 就是一个场景，读取文件产生的图形保存在场景里，
  * MapView 可以显示该场景。
  *
  * 节点：包括路口和地点，抽象出来方便图的计算
@@ -168,17 +168,21 @@ private:
     Mode m_mode = SelectMode;
 
     QString m_title;
+
     double m_scale;
 
     QString m_filePath;
+
     QByteArray m_image; ///< 参考图原始数据
 
     /// 每个节点都对应了一个索引，保存索引对应的节点
     std::vector<Node *> m_nodes;
 
     std::vector<std::vector<std::pair<Node *, Road *>>> m_graph; ///< 图
+
     Node *m_source = nullptr;
     Node *m_destination = nullptr;
+
     std::vector<double> m_shortestDistance;
     /// 保存节点在最短路树中的父节点和连接的道路，这样就可以一路回溯到源点
     std::vector<std::pair<Node *, Road *>> m_shortestPath;

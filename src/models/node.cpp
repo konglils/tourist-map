@@ -14,8 +14,10 @@ Node::Node(double x, double y, QGraphicsItem *parent)
     setAcceptedMouseButtons(Qt::LeftButton);
     setCacheMode(QGraphicsItem::ItemCoordinateCache);
 
-    QRectF rect(x-m_RADIUS, y-m_RADIUS, m_RADIUS*2, m_RADIUS*2);
+    QRectF rect(x-radius, y-radius, radius*2, radius*2);
     m_shape.addEllipse(rect);
+
+    m_color = unCheckedColor;
 }
 
 QRectF Node::boundingRect() const {
@@ -26,6 +28,15 @@ QPainterPath Node::shape() const {
     return m_shape;
 }
 
+void Node::setChecked(bool checked) {
+    m_checked = checked;
+    if (checked) {
+        m_color = checkedColor;
+    } else {
+        m_color = unCheckedColor;
+    }
+}
+
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     painter->setBrush(m_color);
     painter->setPen(QPen(Qt::black, 1));
@@ -33,16 +44,11 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    if (event->button() == Qt::LeftButton) {
+    switch (event->button()) {
+    case Qt::LeftButton:
         map()->clickNode(this);
-    }
-}
-
-void Node::setChecked(bool checked) {
-    m_checked = checked;
-    if (checked) {
-        m_color = Qt::black;
-    } else {
-        m_color = QColor(255, 255, 255, 100);
+        break;
+    default:
+        break;
     }
 }

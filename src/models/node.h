@@ -14,39 +14,55 @@ class QPainter;
 class QStyleOptionGraphicsItem;
 class QWidget;
 
+/**
+ * @brief 节点类，也代表路口
+ */
 class Node : public MapItem
 {
 public:
-    Node(double x, double y, QGraphicsItem *parent = nullptr); // 提供坐标来初始化
-    QRectF boundingRect() const override; // 重写图形更新区域（矩形）
-    QPainterPath shape() const override; // 重写图形形状
-
-    double x() const { return m_x; }
-    double y() const { return m_y; }
-    bool isChecked() const { return m_checked; }
-    virtual void setChecked(bool checked);
-    quint64 index() { return m_index; }
-    void setIndex(quint64 index) { m_index = index; }
-
-    // 保存时需要遍历图中所有 item，设置类型以便区分
+    /// 保存时需要遍历图中所有 item，设置类型以便区分
     enum { Type = QGraphicsItem::UserType + 1 };
     int type() const override { return Type; }
 
-protected:
-    QColor m_color = QColor(255, 255, 255, 100); // 结点颜色
-    bool m_checked = false; // 是否被选中
+    /// 提供节点坐标以初始化
+    Node(double x, double y, QGraphicsItem *parent = nullptr);
 
+    QRectF boundingRect() const override;
+
+    QPainterPath shape() const override;
+
+    double x() const { return m_x; }
+    double y() const { return m_y; }
+
+    virtual void setChecked(bool checked);
+    bool isChecked() const { return m_checked; }
+
+    void setIndex(quint64 index) { m_index = index; }
+    quint64 index() { return m_index; }
+
+protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = nullptr) override; // 重写绘制事件
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override; // 重写鼠标按下事件
+               QWidget *widget = nullptr) override;
+
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+
+    bool m_checked = false;
+
+    QColor m_color;
 
 private:
-    static constexpr int m_RADIUS = 10; // 图形半径
-    QPainterPath m_shape; // 图形形状（圆）
-    double m_x; // x 坐标
-    double m_y; // y 坐标
-    quint64 m_index; // 在图中的索引，用于保存和计算最短路
+    static constexpr int radius = 10;
+
+    static constexpr QColor unCheckedColor = QColor(255, 255, 255, 100);
+    static constexpr QColor checkedColor = QColor(0, 0, 0, 200);
+
+    QPainterPath m_shape;
+
+    double m_x;
+    double m_y;
+
+    quint64 m_index; ///< 在图中的索引，用于计算最短路和保存成文件
 };
 
 #endif // NODE_H

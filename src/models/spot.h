@@ -8,25 +8,38 @@
 
 class QGraphicsSceneHoverEvent;
 
+/**
+ * @brief 地点，具有名称和描述
+ */
 class Spot : public Node
 {
 public:
-    Spot(double x, double y, const QString &name, const QString &description, QGraphicsItem *parent = nullptr);
-    void setChecked(bool checked) override; // 重写选中函数，因为 spot 和 node 选中与否的颜色不同
-    QString name() { return m_name; }
-    QString description() { return m_description; }
-
     enum { Type = QGraphicsItem::UserType + 2 };
     int type() const override { return Type; }
 
+    Spot(double x, double y,
+         const QString &name, const QString &description,
+         QGraphicsItem *parent = nullptr);
+
+    /// 重写选中函数，因为地点和路口选中与否的颜色不同
+    void setChecked(bool checked) override;
+
+    QString name() { return m_name; }
+
+    QString description() { return m_description; }
+
 protected:
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override; // 重写鼠标悬浮进入事件
-    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override; // 重写鼠标悬浮移动事件
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override; // 重写鼠标悬浮离开事件
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
-    QString m_name; // 名称
-    QString m_description; // 描述
+    static constexpr QColor unCheckedColor = QColor(255, 215, 0);
+    static constexpr QColor checkedColor = QColor(0, 255, 127);
+
+    QString m_name;
+
+    QString m_description;
 };
 
 #endif // SPOT_H
