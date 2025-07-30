@@ -27,10 +27,6 @@ public:
     /// 提供节点坐标以初始化
     Node(double x, double y, QGraphicsItem *parent = nullptr);
 
-    QRectF boundingRect() const override;
-
-    QPainterPath shape() const override;
-
     double x() const { return m_x; }
     double y() const { return m_y; }
 
@@ -39,6 +35,10 @@ public:
 
     void setIndex(quint64 index) { m_index = index; }
     quint64 index() { return m_index; }
+
+    QPainterPath shape() const override;
+
+    QRectF boundingRect() const override;
 
 protected:
     void paint(QPainter *painter,

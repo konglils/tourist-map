@@ -10,22 +10,14 @@ Node::Node(double x, double y, QGraphicsItem *parent)
     , m_x(x)
     , m_y(y)
 {
-    setZValue(2);
     setAcceptedMouseButtons(Qt::LeftButton);
     setCacheMode(QGraphicsItem::ItemCoordinateCache);
+    setZValue(2);
 
     QRectF rect(x-radius, y-radius, radius*2, radius*2);
     m_shape.addEllipse(rect);
 
     m_color = unCheckedColor;
-}
-
-QRectF Node::boundingRect() const {
-    return m_shape.boundingRect();
-}
-
-QPainterPath Node::shape() const {
-    return m_shape;
 }
 
 void Node::setChecked(bool checked) {
@@ -35,6 +27,14 @@ void Node::setChecked(bool checked) {
     } else {
         m_color = unCheckedColor;
     }
+}
+
+QPainterPath Node::shape() const {
+    return m_shape;
+}
+
+QRectF Node::boundingRect() const {
+    return m_shape.boundingRect();
 }
 
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

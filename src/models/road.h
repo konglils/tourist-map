@@ -13,46 +13,72 @@ class QGraphicsSceneHoverEvent;
 class QGraphicsSceneMouseEvent;
 class QStyleOptionGraphicsItem;
 
+/**
+ * @brief 道路类，设定为双行道
+ */
 class Road : public MapItem
 {
 public:
-    Road(double x, double y, QGraphicsItem *parent = nullptr);
-    QRectF boundingRect() const override { return m_shape.boundingRect(); }
-    QPainterPath shape() const override { return m_shape; }
-    void render(); // 渲染当前已连线的点，变成一条带状折线
-    void lineTo(double x, double y); // 从当前点连接到新点
-    bool isChecked() const { return m_checked; };
-    void setChecked(bool checked);
-    double distance() { return m_distance; }
-    Node *node1() { return m_node1; }
-    Node *node2() { return m_node2; }
-    void setNode1(Node *node) { m_node1 = node; }
-    void setNode2(Node *node) { m_node2 = node; }
-    std::vector<std::pair<double, double>> points() const; // 返回经过的点的坐标
-
     enum { Type = QGraphicsItem::UserType + 3 };
     int type() const override { return Type; }
+
+    Road(double startX, double startY, QGraphicsItem *parent = nullptr);
+
+    /// 从当前点连接到新点
+    void lineTo(double x, double y);
+
+    /// 渲染当前已连线的点，变成一条有宽度的线
+    void render();
+
+    /// 返回经过的点的坐标
+    std::vector<std::pair<double, double>> points() const;
+
+    void setChecked(bool checked);
+    bool isChecked() const { return m_checked; };
+
+    void setNode1(Node *node) { m_node1 = node; }
+    Node *node1() const { return m_node1; }
+
+    void setNode2(Node *node) { m_node2 = node; }
+    Node *node2() const { return m_node2; }
+
+    double distance() const { return m_distance; }
+
+    QPainterPath shape() const override { return m_shape; }
+
+    QRectF boundingRect() const override { return m_shape.boundingRect(); }
 
 protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
+
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
-    static constexpr int m_WIDTH = 10; // 道路显示宽度
-    Node *m_node1 = nullptr; // 连接的第1个 node
-    Node *m_node2 = nullptr; // 连接的第2个 node
-    QPainterPath m_road; // 以折线段表示的路
-    double m_distance = 0.; // 道路长度
-    QPainterPath m_shape; // 路的实际形状，用于绘图
-    QPainterPath m_major; // 路的主体
-    QPainterPath m_outline; // 路的轮廓
-    QColor m_color = QColor(255, 255, 255, 100); // 路的颜色
-    bool m_checked = false; // 是否被选中
+    static constexpr int width = 10; ///< 道路显示宽度
+
+    static constexpr QColor unCheckedColor = QColor(255, 255, 255, 100);
+    static constexpr QColor checkedColor = QColor(65, 105, 225);
+
+    QPainterPath m_road; ///< 以折线段表示的路
+
+    Node *m_node1 = nullptr;
+    Node *m_node2 = nullptr;
+
+    bool m_checked = false;
+
+    double m_distance = 0.;
+
+    QPainterPath m_shape; ///< 路的实际形状，用于绘图
+    QPainterPath m_major;
+    QPainterPath m_outline;
+
+    QColor m_color;
 };
 
 #endif // ROAD_H
