@@ -53,7 +53,7 @@ NewMapWindow::NewMapWindow(QWidget *parent)
     connect(nameInput, &QLineEdit::textChanged, updateButtonBox);
 
     connect(buttonBox, &QDialogButtonBox::accepted, [=, this]() {
-        m_mapTitle = nameInput->text();
+        m_title = nameInput->text();
         m_scale = scaleSpinBox->value();
         QDialog::accept();
     });

@@ -18,14 +18,14 @@ public:
 
     QString imageFilePath() { return m_imageFilePath; }
 
-    QString mapTitle() { return m_mapTitle; }
+    QString title() { return m_title; }
 
     double scale() { return m_scale; }
 
 private:
     QString m_imageFilePath;
 
-    QString m_mapTitle;
+    QString m_title;
 
     double m_scale;
 };

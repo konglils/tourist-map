@@ -1,14 +1,18 @@
 #include "mapview.h"
 
 #include "mode.h"
+#include "newmapwindow.h"
 #include "node.h"
 #include "spoteditor.h"
 #include "touristmap.h"
 
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QWheelEvent>
+
+#include <QMainWindow>
 
 MapView::MapView(QWidget *parent)
     : QGraphicsView{parent}
@@ -22,22 +26,28 @@ MapView::MapView(QWidget *parent)
     setTransformationAnchor(QGraphicsView::NoAnchor);
 }
 
-void MapView::zoom(bool zoomIn) {
-    zoom(zoomIn, viewport()->rect().center());
+void MapView::zoomIn() {
+    zoom(true, viewport()->rect().center());
+}
+
+void MapView::zoomOut() {
+    zoom(false, viewport()->rect().center());
 }
 
 void MapView::open() {
-    openFile("/home/cyber/Desktop/ecjtu.map");
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        "打开地图",
+        "",
+        "地图 (*.map)"
+        );
+    if (!filePath.isNull()) {
+        openFile(filePath);
+    }
 }
 
-void MapView::openFile(const QString &filePath) {
-    auto map = new TouristMap;
-    bool ok = map->openFile(filePath);
-    if (ok) {
-        showMap(map);
-    } else {
-        QMessageBox::critical(this, "错误", "地图打开失败");
-    }
+void MapView::openDefault() {
+    openFile("/home/cyber/Desktop/ecjtu.map");
 }
 
 void MapView::save() {
@@ -49,17 +59,23 @@ void MapView::save() {
     }
 }
 
-void MapView::createMap(const QString &imageFilePath,
-                        const QString &mapTitle,
-                        double mapScale) {
-    auto map = new TouristMap;
-    bool ok = map->setImage(imageFilePath);
-    if (ok) {
-        map->setTitle(mapTitle);
-        map->setScale(mapScale);
-        showMap(map);
-    } else {
-        QMessageBox::critical(this, "错误", "图片读取失败");
+void MapView::newMap() {
+    NewMapWindow window;
+    switch (window.exec()) {
+    case QDialog::Accepted: {
+        auto map = new TouristMap;
+        bool ok = map->setImage(window.imageFilePath());
+        if (ok) {
+            map->setTitle(window.title());
+            map->setScale(window.scale());
+            showMap(map);
+        } else {
+            QMessageBox::critical(this, "错误", "图片读取失败");
+        }
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -130,6 +146,16 @@ void MapView::wheelEvent(QWheelEvent *event) {
     QPoint angle = event->angleDelta();
     if (!angle.isNull()) {
         zoom(angle.y() > 0, event->position());
+    }
+}
+
+void MapView::openFile(const QString &filePath) {
+    auto map = new TouristMap;
+    bool ok = map->openFile(filePath);
+    if (ok) {
+        showMap(map);
+    } else {
+        QMessageBox::critical(this, "错误", "地图打开失败");
     }
 }
 

@@ -14,9 +14,10 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
 private:
-    QAction *m_currentToggled = nullptr;
+    void setupActions();
+
     MapView *m_view;
 
-    void setupActions();
+    QAction *m_currentToggled = nullptr;
 };
 #endif // MAINWINDOW_H

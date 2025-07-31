@@ -2,9 +2,7 @@
 
 #include "mapview.h"
 #include "mode.h"
-#include "newmapwindow.h"
 
-#include <QFileDialog>
 #include <QTimer>
 #include <QToolBar>
 
@@ -13,13 +11,16 @@ MainWindow::MainWindow(QWidget *parent)
     , m_view{new MapView{this}}
 {
     setWindowTitle("导游咨询");
+
     resize(1200, 750);
+
     setCentralWidget(m_view);
 
     setupActions();
 
-    QTimer::singleShot(0, this, [this](){ // 窗口初始化完成后调用
-        m_view->open();
+    // 窗口初始化完成后调用
+    QTimer::singleShot(0, [this](){
+        m_view->openDefault();
     });
 }
 
@@ -50,66 +51,41 @@ void MainWindow::setupActions() {
     auto delAction = new QAction("删除", this);
     delAction->setCheckable(true);
 
-    connect(openAction, &QAction::triggered, [this]() {
-        QString fileName = QFileDialog::getOpenFileName(
-            this,
-            "打开地图",
-            "",
-            "地图 (*.map)"
-            );
-        if (!fileName.isNull()) {
-            m_view->openFile(fileName);
-        }
-    });
+    connect(openAction, &QAction::triggered, m_view, &MapView::open);
 
-    connect(saveAction, &QAction::triggered, [this]() {
-        m_view->save();
-    });
+    connect(saveAction, &QAction::triggered, m_view, &MapView::save);
 
-    connect(newMapAction, &QAction::triggered, [this]() {
-        NewMapWindow window;
-        bool confirm = window.exec();
-        if (confirm) {
-            m_view->createMap(
-                window.imageFilePath(),
-                window.mapTitle(),
-                window.scale());
-        }
-    });
+    connect(newMapAction, &QAction::triggered, m_view, &MapView::newMap);
 
-    connect(zoomInAction, &QAction::triggered, [this]() {
-        m_view->zoom(true);
-    });
+    connect(zoomInAction, &QAction::triggered, m_view, &MapView::zoomIn);
 
-    connect(zoomOutAction, &QAction::triggered, [this]() {
-        m_view->zoom(false);
-    });
-
-    auto toggle = [this](QAction *action) {
-        if (action == m_currentToggled) {
-            action->setChecked(false);
-            m_view->setMode(SelectMode);
-            m_currentToggled = nullptr;
-        } else {
-            if (m_currentToggled) {
-                m_currentToggled->setChecked(false);
-            }
-            action->setChecked(true);
-            m_currentToggled = action;
-        }
-    };
+    connect(zoomOutAction, &QAction::triggered, m_view, &MapView::zoomOut);
 
     std::vector<std::pair<QAction *, Mode>> actionModes = {
-        { nodeAction, NodeMode },
-        { spotAction, SpotMode },
-        { roadAction, RoadMode },
-        { delAction, DelMode },
+        {nodeAction, NodeMode},
+        {spotAction, SpotMode},
+        {roadAction, RoadMode},
+        {delAction, DelMode},
     };
 
     for (auto [action, mode] : actionModes) {
         connect(action, &QAction::triggered, [=, this]() {
-            m_view->setMode(mode);
-            toggle(action);
+            if (m_currentToggled) {
+                if (m_currentToggled == action) {
+                    action->setChecked(false);
+                    m_currentToggled = nullptr;
+                    m_view->setMode(SelectMode);
+                } else {
+                    m_currentToggled->setChecked(false);
+                    action->setChecked(true);
+                    m_currentToggled = action;
+                    m_view->setMode(mode);
+                }
+            } else {
+                action->setChecked(true);
+                m_currentToggled = action;
+                m_view->setMode(mode);
+            }
         });
     }
 

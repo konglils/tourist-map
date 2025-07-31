@@ -24,38 +24,25 @@ class MapView : public QGraphicsView
 public:
     explicit MapView(QWidget *parent = nullptr);
 
-    /**
-     * @brief 在视口中心缩放
-     * @param zoomIn 是否放大
-     */
-    void zoom(bool zoomIn);
+    /// 在视口中心放大
+    void zoomIn();
 
-    /**
-     * @brief 打开默认地图
-     */
+    /// 在视口中心缩小
+    void zoomOut();
+
+    /// 选择地图文件打开地图
     void open();
 
-    /**
-     * @brief 打开地图文件
-     * @param filePath 文件路径
-     */
-    void openFile(const QString &filePath);
+    /// 打开默认地图
+    void openDefault();
 
-    /**
-     * @brief 保存当前地图
-     */
+    /// 保存当前地图
     void save();
 
-    /**
-     * @brief 创建新地图
-     * @param imageFilePath 参考图路径
-     * @param mapTitle 地图标题
-     * @param mapScale 地图比例尺
-     */
-    void createMap(const QString &imageFilePath,
-                   const QString &mapTitle,
-                   double mapScale);
+    /// 创建新地图
+    void newMap();
 
+    /// 设置地图的操作模式
     void setMode(Mode mode);
 
 protected:
@@ -65,6 +52,8 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
+    void openFile(const QString &filePath);
+
     TouristMap *map() const;
 
     void showMap(TouristMap *map);
