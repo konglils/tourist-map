@@ -341,6 +341,20 @@ void TouristMap::hideSpotEditor() {
     m_editorProxy->hide();
 }
 
+void TouristMap::setMode(Mode mode) {
+    switch (m_mode) {
+    case SelectMode:
+        clear();
+        break;
+    case SpotMode:
+        hideSpotEditor();
+        break;
+    default:
+        break;
+    }
+    m_mode = mode;
+}
+
 bool TouristMap::readImage(QDataStream &in) {
     qint64 bytesRead = in.readRawData(m_image.data(), m_image.size());
     if (bytesRead != m_image.size()) {

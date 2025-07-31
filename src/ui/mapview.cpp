@@ -79,19 +79,9 @@ void MapView::newMap() {
     }
 }
 
-void MapView::setMode(Mode newMode) {
+void MapView::setMode(Mode mode) {
     if (map()) {
-        switch (map()->mode()) {
-        case SelectMode:
-            map()->clear();
-            break;
-        case SpotMode:
-            map()->hideSpotEditor();
-            break;
-        default:
-            break;
-        }
-        map()->setMode(newMode);
+        map()->setMode(mode);
     }
 }
 

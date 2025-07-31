@@ -129,7 +129,7 @@ public:
 
     InfoTip *infoTip() const { return m_infoTip; }
 
-    void setMode(Mode mode) { m_mode = mode; }
+    void setMode(Mode mode);
     Mode mode() const { return m_mode; }
 
     void setTitle(const QString &title) { m_title = title;}
