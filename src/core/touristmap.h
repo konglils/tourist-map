@@ -1,8 +1,6 @@
 #ifndef TOURISTMAP_H
 #define TOURISTMAP_H
 
-#include "mode.h"
-
 #include <QGraphicsScene>
 #include <QPointF>
 #include <QString>
@@ -68,6 +66,26 @@ class SpotEditor;
 class TouristMap : public QGraphicsScene
 {
 public:
+    /**
+     * @brief 定义地图的操作模式
+     */
+    enum Mode {
+        /// 选择节点和道路，查看最短路径
+        SelectMode = 0,
+
+        /// 添加路口
+        NodeMode,
+
+        /// 添加地点
+        SpotMode,
+
+        /// 添加道路
+        RoadMode,
+
+        /// 删除节点或道路
+        DelMode,
+    };
+
     explicit TouristMap(QObject *parent = nullptr);
 
     ~TouristMap();
@@ -129,7 +147,7 @@ public:
 
     InfoTip *infoTip() const { return m_infoTip; }
 
-    void setMode(Mode mode);
+    void setMode(int mode);
     Mode mode() const { return m_mode; }
 
     void setTitle(const QString &title) { m_title = title;}

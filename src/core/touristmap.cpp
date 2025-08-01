@@ -341,7 +341,7 @@ void TouristMap::hideSpotEditor() {
     m_editorProxy->hide();
 }
 
-void TouristMap::setMode(Mode mode) {
+void TouristMap::setMode(int mode) {
     switch (m_mode) {
     case SelectMode:
         clear();
@@ -352,7 +352,7 @@ void TouristMap::setMode(Mode mode) {
     default:
         break;
     }
-    m_mode = mode;
+    m_mode = (Mode)mode;
 }
 
 bool TouristMap::readImage(QDataStream &in) {

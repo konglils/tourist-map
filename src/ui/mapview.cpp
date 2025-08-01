@@ -1,6 +1,5 @@
 #include "mapview.h"
 
-#include "mode.h"
 #include "newmapwindow.h"
 #include "node.h"
 #include "spoteditor.h"
@@ -82,7 +81,7 @@ void MapView::newMap() {
 void MapView::setMode(int mode) {
     if (map()) {
         emit modeChanged(mode);
-        map()->setMode((Mode)mode);
+        map()->setMode(mode);
     }
 }
 

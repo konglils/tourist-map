@@ -1,8 +1,6 @@
 #ifndef MAPVIEW_H
 #define MAPVIEW_H
 
-#include "mode.h"
-
 #include <QGraphicsView>
 #include <QPointF>
 #include <QString>
