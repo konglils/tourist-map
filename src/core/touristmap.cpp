@@ -520,13 +520,13 @@ void TouristMap::delNode(Node *node) {
 }
 
 void TouristMap::delRoad(Road *road) {
-    // 稀疏图，O(1) 时间复杂度
-    Node *node1 = road->node1();
-    Node *node2 = road->node2();
-    if (node1) {
+    if (road == m_buildingRoad) {
+        m_buildingRoad = nullptr;
+    } else {
+        Node *node1 = road->node1();
+        Node *node2 = road->node2();
+        // 稀疏图，O(1) 时间复杂度
         std::erase(m_graph[node1->index()], std::make_pair(node2, road));
-    }
-    if (node2) {
         std::erase(m_graph[node2->index()], std::make_pair(node1, road));
     }
     removeItem(road);

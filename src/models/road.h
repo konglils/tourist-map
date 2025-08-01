@@ -15,6 +15,8 @@ class QStyleOptionGraphicsItem;
 
 /**
  * @brief 道路类，设定为双行道
+ *
+ * @note 除了 buildingRoad，其他道路的 node1 和 node2 都不允许为空
  */
 class Road : public MapItem
 {
