@@ -6,7 +6,7 @@
  */
 enum Mode {
     /// 选择节点和道路，查看最短路径
-    SelectMode,
+    SelectMode = 0,
 
     /// 添加路口
     NodeMode,

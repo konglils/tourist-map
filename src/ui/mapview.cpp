@@ -17,7 +17,7 @@
 MapView::MapView(QWidget *parent)
     : QGraphicsView{parent}
 {
-    // 开始不可操作，因为没有还没有场景
+    // 开始不可操作，因为没有还没有打开地图
     setEnabled(false);
 
     setRenderHint(QPainter::Antialiasing);
@@ -68,7 +68,7 @@ void MapView::newMap() {
         if (ok) {
             map->setTitle(window.title());
             map->setScale(window.scale());
-            showMap(map);
+            setMap(map);
         } else {
             QMessageBox::critical(this, "错误", "图片读取失败");
         }
@@ -79,9 +79,10 @@ void MapView::newMap() {
     }
 }
 
-void MapView::setMode(Mode mode) {
+void MapView::setMode(int mode) {
     if (map()) {
-        map()->setMode(mode);
+        emit modeChanged(mode);
+        map()->setMode((Mode)mode);
     }
 }
 
@@ -143,7 +144,7 @@ void MapView::openFile(const QString &filePath) {
     auto map = new TouristMap;
     bool ok = map->openFile(filePath);
     if (ok) {
-        showMap(map);
+        setMap(map);
     } else {
         QMessageBox::critical(this, "错误", "地图打开失败");
     }
@@ -153,8 +154,10 @@ TouristMap *MapView::map() const {
     return static_cast<TouristMap *>(scene());
 }
 
-void MapView::showMap(TouristMap *newMap) {
+void MapView::setMap(TouristMap *newMap) {
     delete map();
+
+    emit modeChanged(newMap->mode());
 
     setScene(newMap);
     setTitle(newMap->title());

@@ -43,7 +43,14 @@ public:
     void newMap();
 
     /// 设置地图的操作模式
-    void setMode(Mode mode);
+    void setMode(int mode);
+
+signals:
+    /**
+     * @brief 模式改变的信号
+     * @param mode 改变后的模式；-1 表示未打开地图
+     */
+    void modeChanged(int mode);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -56,7 +63,7 @@ private:
 
     TouristMap *map() const;
 
-    void showMap(TouristMap *map);
+    void setMap(TouristMap *map);
 
     /// 在视口指定位置缩放
     void zoom(bool zoomIn, QPointF pos);

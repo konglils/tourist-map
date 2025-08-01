@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 
 #include "mapview.h"
-#include "mode.h"
 
 #include <QTimer>
 #include <QToolBar>
@@ -61,33 +60,52 @@ void MainWindow::setupActions() {
 
     connect(zoomOutAction, &QAction::triggered, m_view, &MapView::zoomOut);
 
-    std::vector<std::pair<QAction *, Mode>> actionModes = {
-        {nodeAction, NodeMode},
-        {spotAction, SpotMode},
-        {roadAction, RoadMode},
-        {delAction, DelMode},
+    // 按照模式枚举的定义顺序，定义模式对应的 Action
+    std::vector<QAction *> modeActions = {
+        nullptr,
+        nodeAction,
+        spotAction,
+        roadAction,
+        delAction,
     };
 
-    for (auto [action, mode] : actionModes) {
-        connect(action, &QAction::triggered, [=, this]() {
-            if (m_currentToggled) {
-                if (m_currentToggled == action) {
-                    action->setChecked(false);
-                    m_currentToggled = nullptr;
-                    m_view->setMode(SelectMode);
-                } else {
-                    m_currentToggled->setChecked(false);
-                    action->setChecked(true);
-                    m_currentToggled = action;
-                    m_view->setMode(mode);
-                }
-            } else {
-                action->setChecked(true);
-                m_currentToggled = action;
-                m_view->setMode(mode);
-            }
-        });
+    for (int i = 0; i < modeActions.size(); i += 1) {
+        auto action = modeActions[i];
+        if (action) {
+            connect(action, &QAction::triggered, [=, this]() {
+                m_view->setMode(i);
+            });
+        }
     }
+
+    auto enableModeActions = [=](bool b) {
+        for (auto action : modeActions) {
+            if (action) {
+                action->setEnabled(b);
+            }
+        }
+    };
+
+    enableModeActions(false);
+
+    connect(m_view, &MapView::modeChanged, [=, this](int mode) {
+        if (m_currentToggled) {
+            m_currentToggled->setChecked(false);
+        }
+
+        if (mode == -1) {
+            enableModeActions(false);
+        } else {
+            if (!modeActions[1]->isChecked()) {
+                enableModeActions(true);
+            }
+            auto action = modeActions[mode];
+            if (action) {
+                action->setChecked(true);
+            }
+            m_currentToggled = action;
+        }
+    });
 
     auto toolBar = new QToolBar(this);
     toolBar->setMovable(false);
